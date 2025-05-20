@@ -7,7 +7,7 @@ import {
   getBannedUsers,
   getBannedEmails,
   validateOwnerKey,
-  GetReports,
+  GetReports,GetOneReport
 } from "./ownercontrollers.js";
 const router = express.Router();
 
@@ -22,5 +22,7 @@ router.get("/users/banned", validateOwnerKey, getBannedUsers);
 router.get("/users/banned/emails", validateOwnerKey, getBannedEmails);
 
 router.get("/reports", validateOwnerKey, GetReports);
+
+router.get("/reports/:id", validateOwnerKey, GetOneReport);
 
 export default router;

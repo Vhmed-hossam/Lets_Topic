@@ -132,4 +132,18 @@ export const GetReports = async (req, res) => {
   }
 };
 
-export const GetOneReport = async (req, res) => {};
+export const GetOneReport = async (req, res) => {
+  const { id } = req.params;
+  try {
+    if (!id) {
+      return res.status(400).json({ error: "Report ID is required" });
+    }
+    const report = await Report.findById(id);
+    if (!report) {
+      return res.status(404).json({ error: "Report not found" });
+    }
+    return res.status(200).json({ success: true, data: report });
+  } catch (error) {
+    console.error("Error fetching report:", error);
+  }
+};
