@@ -1,0 +1,15 @@
+@theme {
+    --color-main: #645EE2;
+    --color-second: #31A3BD;
+    --color-success: #31BD3A;
+    --color-caution: #E25E60;
+    --color-black: #030E10;
+    --color-white: #F8F8FF;
+    --color-black-text: #F8F8FF;
+    --color-white-text: #030E10;
+    --color-black-full: #02080A;
+    --color-side-text: #7B828A;
+    --color-main-shiny: #9747FF;
+    --color-second-shiny: #28AFCE;
+    --color-very-caution: #BB0C0F;
+  }

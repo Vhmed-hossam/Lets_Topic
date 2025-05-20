@@ -1,0 +1,33 @@
+@import './Theme.css';
+@layer base {
+    :root {
+      --tw-color-main: var(--color-main);
+      --tw-color-second: var(--color-second);
+      --tw-color-success: var(--color-success);
+      --tw-color-danger: var(--color-caution);
+      --tw-color-black: var(--color-black);
+      --tw-color-white: var(--color-white);
+      --tw-color-black-text: var(--color-black-text);
+      --tw-color-white-text: var(--color-white-text);
+      --tw-color-side-text: var(--color-side-text);
+      --tw-color-black-full: var(--color-black-full);
+      --tw-color-main-shiny: var(--color-main-shiny);
+      --tw-color-second-shiny: var(--color-second-shiny);
+    }
+  }
+
+@layer utilities {
+    @media (prefers-color-scheme: light) {
+      :root {
+        --color-background: #F8F8FF;
+        --color-text: #030E10;
+      }
+    }
+  
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --color-background: #02080A;
+        --color-text: #F8F8FF;
+      }
+    }
+  }
