@@ -1,0 +1,15 @@
+export const VALID_NOTIFICATION_TYPES = [
+  "friend_request_received",
+  "friend_request_accepted",
+  "friend_request_declined",
+  "block_initiated",
+  "block_received",
+  "unfriend_initiated",
+  "unfriend_received",
+  "unblock_initiated",
+  "unblock_received",
+  "wipe_chat_request",
+  "wipe_chat_accepted",
+  "wipe_chat_declined",
+  "wipe_chat_request_sent",
+];
