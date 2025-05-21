@@ -4,6 +4,8 @@ import AuthImagePattern from "../../components/AuthImagePattern/AuthImagePattern
 import MainHeader from "../../components/Header/header";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
+import SigninLoader from "../../components/Spinner/signinloader";
+import { useNavigate } from "react-router-dom";
 
 export default function Resetpassword() {
   // for users who forgot their password
@@ -18,6 +20,7 @@ export default function Resetpassword() {
       { opacity: 1, duration: 1, ease: "power4.out", y: 0 }
     );
   });
+  const navigate = useNavigate();
   return (
     <>
       <div className="grid grid-cols-1 lg:grid-cols-2 min-h-screen">
@@ -43,6 +46,18 @@ export default function Resetpassword() {
             value={NewPassword}
             onChange={(e) => setNewPassword(e.target.value)}
           />
+          <button
+            className="btn w-full bg-main max-w-md"
+            onClick={async () => {
+              await ResetPassword({
+                verificationCode: code,
+                newPassword: NewPassword,
+              });
+              navigate("/login");
+            }}
+          >
+            {isResettingPass ? <SigninLoader /> : "Reset Password"}
+          </button>
         </div>
         <div className="hidden lg:flex items-center justify-center p-12">
           <AuthImagePattern

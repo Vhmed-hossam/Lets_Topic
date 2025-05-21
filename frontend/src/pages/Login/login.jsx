@@ -1,34 +1,24 @@
-import React, { useState, useRef } from "react";
-import {
-  EyeClosed,
-  KeyRound,
-  Mail,
-  TriangleAlert,
-  User,
-  X,
-} from "lucide-react";
+import { useState, useRef } from "react";
+import { EyeClosed, KeyRound, Mail } from "lucide-react";
 import { Eye } from "lucide-react";
 import { useAuthStore } from "../../store/useAuthStore";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
-import { Link, Navigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import AuthImagePattern from "../../components/AuthImagePattern/AuthImagePattern";
 import LoginLoader from "../../components/Spinner/loginLoader";
-import { useSettingStore } from "../../store/useSettingsStore";
 import { ErrorToast } from "../../components/Toast/Toasters";
-import { AnimatePresence, motion } from "framer-motion";
-import SigninLoader from "../../components/Spinner/signinloader";
+import { AnimatePresence } from "framer-motion";
 import { usePopoversStore } from "../../store/usePopoversStore";
 import RestorePopover from "../../components/Popovers/RestorePopover";
 export default function Login() {
   const [ShowPassword, setShowPassword] = useState(false);
   const handleClickShowPassword = () => setShowPassword((show) => !show);
-  const { isLoggingIn, Login, restoreAccount, ForgetPassword, isRestoring } =
+  const { isLoggingIn, Login, ForgetPassword, isResettingPass } =
     useAuthStore();
   const formRef = useRef(null);
-  const { theme } = useSettingStore();
   useGSAP(() => {
     gsap.fromTo(
       formRef.current,
@@ -54,6 +44,7 @@ export default function Login() {
         "Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character"
       ),
   });
+  const navigate = useNavigate();
 
   const { values, handleChange, handleBlur, errors, touched, handleSubmit } =
     useFormik({
@@ -76,7 +67,6 @@ export default function Login() {
     });
 
   const { RestorePopoverState, OpenRestorePopover } = usePopoversStore();
-
   return (
     <>
       <AnimatePresence>
@@ -156,42 +146,36 @@ export default function Login() {
               className={`w-full bg-second
                  hover:bg-second/75 text-white py-4 
                  rounded-lg cursor-pointer  transition ${
-                   isLoggingIn
+                   isLoggingIn || isResettingPass
                      ? "opacity-50 cursor-not-allowed border border-second"
                      : ""
                  }`}
               type="submit"
-              disabled={isLoggingIn}
+              disabled={isLoggingIn || isResettingPass}
             >
-              {isLoggingIn ? <LoginLoader /> : "Log In"}
+              {isLoggingIn || isResettingPass ? <LoginLoader /> : "Log In"}
             </button>
           </form>
-          <button
-            className="w-full max-w-lg px-3"
-            onClick={() => {
-              if (
-                !/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(
-                  values.email.trim()
-                )
-              ) {
-                ErrorToast("Please enter your email");
-              }
-            }}
-          ></button>
           <div className="text-center mt-4">
             <p>
               Don't have an account?{" "}
               <Link
                 to="/signup"
-                className="text-second hover:text-second/75 transition"
+                className="hover:text-main-shiny text-main transition"
               >
                 Sign Up
               </Link>
             </p>
           </div>
-          <Link to="/reset-password">
-            <p className="text-second text-end mt-1.5">Forget your password?</p>
-          </Link>
+          <button
+            type="button"
+            className="text-second transition-all hover:text-second/75"
+            onClick={() => {
+              ForgetPassword(values.email);
+            }}
+          >
+            Forget your password?
+          </button>
         </div>
         <div className="hidden lg:flex items-center justify-center p-12">
           <AuthImagePattern
@@ -205,4 +189,3 @@ export default function Login() {
     </>
   );
 }
-
