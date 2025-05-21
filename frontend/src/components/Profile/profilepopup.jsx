@@ -338,6 +338,7 @@ export default function ProfileComp() {
                     SelectedUser?.bio,
                     getContrastingTextColor(myMessageTheme)
                   )}
+                {!SelectedUser?.bio && "No bio."}
               </p>
             </div>
             <div
