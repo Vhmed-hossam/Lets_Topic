@@ -80,3 +80,20 @@ input[type="range"].custom-thumb::-webkit-slider-thumb {
   cursor: pointer;
   border: none;
 }
+.animate-slide-up {
+  animation: slideUp 0.2s linear forwards;
+}
+
+
+
+.splide__slide {
+  transform: scale(0.95);
+  opacity: 0.7;
+  transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+.splide__slide.is-active {
+  transform: scale(1.001);
+  opacity: 1;
+  border: 1px solid var(--color-main);
+}
