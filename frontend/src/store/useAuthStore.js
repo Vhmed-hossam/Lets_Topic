@@ -447,7 +447,6 @@ export const useAuthStore = create((set, get) => ({
         image: data.image,
       });
       SuccesToast(res.data.message);
-      console.log(res);
     } catch (error) {
       console.error("ReportUser error:", error);
       ErrorToast(error.response?.data?.error || "Failed to report user");
@@ -455,15 +454,35 @@ export const useAuthStore = create((set, get) => ({
       set({ isReportingUser: false });
     }
   },
-  ForgetPassword: async (data) => {
+  ForgetPassword: async (email) => {
     set({ isResettingPass: true });
     try {
+      const res = await axiosInstance.post("/auth/forget-password", {
+        email,
+      });
+      SuccesToast(res.data.message);
     } catch (error) {
       console.error(error);
       ErrorToast(error.response?.data?.error || "Failed to reset password");
+    } finally {
+      set({ isResettingPass: false });
     }
   },
-  ResetPassword: async (email) => {},
+  ResetPassword: async (data) => {
+    set({ isResettingPass: true });
+    try {
+      const res = await axiosInstance.put("/auth/ver-reset-password", {
+        verificationCode: data.verificationCode,
+        newPassword: data.newPassword,
+      });
+      SuccesToast(res.data.message);
+    } catch (error) {
+      console.error(error);
+      ErrorToast(error.response?.data?.error || "Failed to reset password");
+    } finally {
+      set({ isResettingPass: false });
+    }
+  },
   CancelOperations: async (data) => {
     set({ isCancelingOperations: true });
     try {
