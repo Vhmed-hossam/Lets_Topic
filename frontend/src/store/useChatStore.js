@@ -19,6 +19,8 @@ export const useChatStore = create((set, get) => ({
   ChatMedia: null,
   lastMakredUserId: null,
   MediaOpened: false,
+  isEditing: false,
+  isDeleting: false,
   OpenMedia: () => {
     set({ MediaOpened: true });
   },
@@ -397,5 +399,40 @@ export const useChatStore = create((set, get) => ({
   },
   closeProfile: () => {
     set({ ProfileOpened: false });
+  },
+  EditMessage: async (data) => {
+    set({ isEditing: true });
+    try {
+      const res = await axiosInstance.put(
+        `/messages/update-message/${data.messageId}`,
+        {
+          NewText: data.Text,
+        }
+      );
+      get().GetMessages(data.selectedId);
+      console.log(res);
+      SuccesToast(res.data.message || "Message edited successfully");
+    } catch (error) {
+      console.error("EditMessage error:", error);
+      ErrorToast(error.response?.data?.error || "Failed to edit message");
+    } finally {
+      set({ isEditing: false });
+    }
+  },
+  DeleteMessage: async (messageId) => {
+    set({ isDeleting: true });
+    try {
+      const res = await axiosInstance.delete(
+        `/messages/delete-message/${messageId}`
+      );
+      get().GetMessages(data.selectedId);
+      console.log(res);
+      SuccesToast(res.data.message || "Message deleted successfully");
+    } catch (error) {
+      console.error("DeleteMessage error:", error);
+      ErrorToast(error.response?.data?.error || "Failed to delete message");
+    } finally {
+      set({ isDeleting: false });
+    }
   },
 }));
