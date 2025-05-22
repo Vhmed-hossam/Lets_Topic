@@ -197,23 +197,69 @@ export const DeleteMessage = async (req, res) => {
 
 export const UpdateMessage = async (req, res) => {
   const { id: messageId } = req.params;
-  const { NewText } = req.body;
-  if (!messageId) {
-    return res.status(400).json({ error: "Message id is required" });
+  const { NewText, userToChatId } = req.body;
+  const myId = req.user._id;
+
+  if (!messageId || !NewText || !userToChatId) {
+    return res.status(400).json({
+      error: "Message ID, new text, and recipient ID are required",
+    });
   }
+
   try {
-    const updatedMessage = await Message.findByIdAndUpdate(
-      messageId,
-      { text: NewText, edited: true },
-      { new: true }
-    );
-    if (!updatedMessage) {
+    const message = await Message.findById(messageId);
+
+    if (!message) {
       return res.status(404).json({ error: "Message not found" });
     }
-    res.status(200).json({ message: "Message updated successfully" });
+
+    if (message.senderId.toString() !== myId.toString()) {
+      return res.status(403).json({
+        error: "Unauthorized: You can only edit your own messages",
+      });
+    }
+
+    const updatedMessage = await Message.findByIdAndUpdate(
+      messageId,
+      {
+        text: NewText,
+        edited: true,
+      },
+      {
+        new: true,
+        runValidators: true,
+      }
+    );
+
+    if (!updatedMessage) {
+      return res.status(404).json({ error: "Failed to update message" });
+    }
+
+    const messages = await Message.find({
+      $or: [
+        { senderId: myId, receiverId: userToChatId },
+        { senderId: userToChatId, receiverId: myId },
+      ],
+    })
+      .sort({ createdAt: 1 })
+      .lean();
+
+    return res.status(200).json({
+      message: "Message updated successfully",
+      updatedMessage,
+      messages,
+    });
   } catch (error) {
+    if (error.name === "CastError") {
+      return res.status(400).json({ error: "Invalid message ID format" });
+    }
+
     console.error("UpdateMessage error:", error);
-    res.status(500).json({ error: "Internal Server Error" });
+    return res.status(500).json({
+      error: "Internal Server Error",
+      details:
+        process.env.NODE_ENV === "development" ? error.message : undefined,
+    });
   }
 };
 
