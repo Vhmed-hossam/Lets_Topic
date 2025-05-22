@@ -11,15 +11,15 @@ import formatDateOnly from "../../helpers/formatDateonly";
 import MinimalAudioPlayer from "../CustomAudioPlayer/CustomAudioPlayer";
 import { useFriendsStore } from "../../store/useFriendsStore";
 import CustomVideoPlayer from "../CustomVideoPlayer/CustomVideoPlayer";
-import { EllipsisVertical } from "lucide-react";
-import { useGSAP } from "@gsap/react";
-import gsap from "gsap";
+import { Pencil, Trash } from "lucide-react";
 import { defaultImage } from "../../Data/Avatars";
 import renderTextWithLinks from "../../helpers/renderTLink";
+import { AnimatePresence } from "framer-motion";
+import EditPopover from "../Popovers/EditPopover";
+import { usePopoversStore } from "../../store/usePopoversStore";
 export default function Chat() {
+  const [Data, setData] = useState(null);
   const scrollRef = useRef(null);
-  const toggleref = useRef(null);
-  const [isToggleOpen, setIsToggleOpen] = useState(false);
   const {
     Messages,
     GetMessages,
@@ -31,10 +31,11 @@ export default function Chat() {
     UnsubscribeFromMessages,
     SetSelectedUser,
   } = useChatStore();
+  const { EditMessagePopoverState, OpenEditMessagePopover } =
+    usePopoversStore();
   const { authUser } = useAuthStore();
   const { theme, myMessageTheme, mySenderTheme } = useSettingStore();
   const { sendFriendRequest, SendMessage, friends } = useFriendsStore();
-  const newMessageIds = new Set();
   const scrollToBottom = (behavior) => {
     if (scrollRef.current) {
       scrollRef.current.scrollIntoView({ behavior });
@@ -42,27 +43,6 @@ export default function Chat() {
     }
   };
 
-  useGSAP(
-    () => {
-      if (isToggleOpen) {
-        toggleref.current.style.display = "block";
-        gsap.fromTo(
-          toggleref.current,
-          { opacity: 0, scale: 0.8, y: -10 },
-          { opacity: 1, scale: 1, y: 0, duration: 0.3, ease: "back.out(2.1)" }
-        );
-      } else {
-        gsap.to(toggleref.current, {
-          opacity: 0,
-          scale: 0.8,
-          y: 10,
-          duration: 0.2,
-          ease: "power2.in",
-        });
-      }
-    },
-    { dependencies: [isToggleOpen] }
-  );
   useEffect(
     () => scrollToBottom("smooth"),
     [Messages, SelectedUser?._id, isMessagesLoading]
@@ -91,9 +71,13 @@ export default function Chat() {
       </div>
     );
   }
-
   return (
     <>
+      {EditMessagePopoverState && (
+        <AnimatePresence>
+          <EditPopover messageData={Data} />
+        </AnimatePresence>
+      )}
       <div
         className="flex flex-1 self-stretch flex-col overflow-auto "
         ref={scrollRef}
@@ -182,7 +166,7 @@ export default function Chat() {
                   <div
                     key={message._id}
                     id={`message-${message._id}`}
-                    className="transition-all duration-300"
+                    className="transition-all duration-300 relative mx-3"
                   >
                     {showDateSeparator && (
                       <div className="flex justify-center my-4 transition-all duration-300 bg-transparent">
@@ -198,65 +182,75 @@ export default function Chat() {
                       </div>
                     )}
                     <div
-                      className={`chat transition-all duration-300 bg-transparent ${
+                      className={`chat transition-all duration-300 bg-transprent group  ${
                         isMine ? "chat-end" : "chat-start"
-                      } ${
-                        newMessageIds.has(message._id) ? "animate-slide-up" : ""
                       }`}
                     >
-                      <div
-                        className="chat-bubble max-w-[350px] break-words relative group max-[550px]:max-w-[200px] pe-7"
-                        style={{
-                          backgroundColor: isMine
-                            ? myMessageTheme
-                            : mySenderTheme,
-                          color: textColor,
-                        }}
-                      >
-                        <div className="absolute top-0.5 right-0 w-8 h-8 z-2">
-                          <div
-                            className={`flex items-center group-hover:opacity-100 opacity-0 
-                              bg-gradient-to-tr duration-50 from-${myMessageTheme} 
-                              to-transparent justify-center w-full h-full p-1 transition-all z-2 overflow-hidden`}
-                            style={{
-                              visibility: isMine ? "visible" : "hidden",
-                            }}
-                          >
-                            <button className="cursor-pointer p-1">
-                              <EllipsisVertical style={{ color: textColor }} />
-                            </button>
-                          </div>
-                        </div>
-                        {message?.image && (
-                          <img
-                            src={message.image}
-                            className="w-full max-w-[300px] rounded-md mb-2 "
-                            alt=""
-                          />
-                        )}
-                        {message?.type === "voice" && (
-                          <div className="mt-2 w-full">
-                            <MinimalAudioPlayer src={message.voiceUrl} />
+                      <div className="flex flex-row items-center gap-2 ">
+                        {isMine && (
+                          <div className="hidden group-hover:flex">
+                            <div className="flex gap-2 text-zinc-500">
+                              <button
+                                onClick={() => {}}
+                                className="cursor-pointer"
+                              >
+                                <Trash size={20} />
+                              </button>
+                              {message?.text && (
+                                <button
+                                  onClick={async () => {
+                                    setData(message);
+                                    OpenEditMessagePopover();
+                                  }}
+                                  className="cursor-pointer"
+                                >
+                                  <Pencil size={20} />
+                                </button>
+                              )}
+                            </div>
                           </div>
                         )}
-                        {message?.type === "video" && (
-                          <div className="mt-2 w-full">
-                            <CustomVideoPlayer src={message.videoUrl} />
-                          </div>
-                        )}
-                        {message?.text &&
-                          renderTextWithLinks(
-                            message.text,
-                            getContrastingTextColor(
-                              isMine ? myMessageTheme : mySenderTheme
-                            )
-                          )}
                         <div
-                          className={`mt-1 text-xs  ${
-                            isMine ? "text-end" : "text-start"
-                          }`}
+                          className="chat-bubble max-w-[350px] break-words relative group max-[550px]:max-w-[200px] pe-7"
+                          style={{
+                            backgroundColor: isMine
+                              ? myMessageTheme
+                              : mySenderTheme,
+                            color: textColor,
+                          }}
                         >
-                          {formatTime(message.createdAt)}
+                          {message?.image && (
+                            <img
+                              src={message.image}
+                              className="w-full max-w-[300px] rounded-md mb-2 "
+                              alt=""
+                            />
+                          )}
+                          {message?.type === "voice" && (
+                            <div className="mt-2 w-full">
+                              <MinimalAudioPlayer src={message.voiceUrl} />
+                            </div>
+                          )}
+                          {message?.type === "video" && (
+                            <div className="mt-2 w-full">
+                              <CustomVideoPlayer src={message.videoUrl} />
+                            </div>
+                          )}
+                          {message?.text &&
+                            renderTextWithLinks(
+                              message.text,
+                              getContrastingTextColor(
+                                isMine ? myMessageTheme : mySenderTheme
+                              )
+                            )}
+                          <div
+                            className={`mt-1 text-xs  ${
+                              isMine ? "text-end" : "text-start"
+                            }`}
+                          >
+                            <span>{!message.edited ? "" : "Edited"}</span>{" "}
+                            {formatTime(message.createdAt)}
+                          </div>
                         </div>
                       </div>
                     </div>
@@ -291,7 +285,6 @@ export default function Chat() {
           </div>
         </div>
       </div>
-      {}
     </>
   );
 }

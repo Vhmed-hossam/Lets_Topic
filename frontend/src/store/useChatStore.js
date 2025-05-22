@@ -27,35 +27,6 @@ export const useChatStore = create((set, get) => ({
   CloseMedia: () => {
     set({ MediaOpened: false });
   },
-  createNotification: ({ title, body, tag, data }) => {
-    if (Notification.permission !== "granted") {
-      console.warn("Notifications not allowed");
-      return;
-    }
-
-    const options = {
-      body,
-      icon: "/path/to/icon.png",
-      tag: tag || "chat-notification",
-      data,
-      timestamp: Date.now(),
-    };
-
-    const notification = new Notification(title, options);
-
-    notification.onclick = (event) => {
-      event.preventDefault();
-      window.focus();
-      if (data?.userId) {
-        const user = get().Users.find((u) => u._id === data.userId);
-        if (user) {
-          get().SetSelectedUser(user);
-        }
-      }
-      notification.close();
-    };
-  },
-
   GetUsers: async () => {
     set({ isUsersLoading: true });
     set({ SelectedUser: null });
@@ -399,30 +370,53 @@ export const useChatStore = create((set, get) => ({
     set({ ProfileOpened: false });
   },
   EditMessage: async (data) => {
+    const { messageId, Text, userToChatId } = data;
+
+    if (!messageId || !Text?.trim() || !userToChatId) {
+      ErrorToast("Message ID, text, and recipient ID are required");
+      return;
+    }
+
     set({ isEditing: true });
+
     try {
+      set((state) => ({
+        Messages: state.Messages.map((msg) =>
+          msg._id === messageId ? { ...msg, text: Text, edited: true } : msg
+        ),
+      }));
+
       const res = await axiosInstance.put(
-        `/messages/update-message/${data.messageId}`,
+        `/messages/update-message/${messageId}`,
         {
-          NewText: data.Text,
+          NewText: Text.trim(),
+          userToChatId,
         }
       );
-      get().GetMessages(data.selectedId);
+      set({ Messages: res.data.messages || [] });
       SuccesToast(res.data.message || "Message edited successfully");
     } catch (error) {
-      console.error("EditMessage error:", error);
-      ErrorToast(error.response?.data?.error || "Failed to edit message");
+      set((state) => ({
+        Messages: state.Messages.map((msg) =>
+          msg._id === messageId
+            ? { ...msg, text: msg.text, edited: msg.edited }
+            : msg
+        ),
+      }));
+      ErrorToast(error.response?.data?.error);
     } finally {
       set({ isEditing: false });
     }
   },
+
   DeleteMessage: async (messageId) => {
     set({ isDeleting: true });
     try {
       const res = await axiosInstance.delete(
         `/messages/delete-message/${messageId}`
       );
-      get().GetMessages(data.selectedId);
+      const resp = get().GetMessages(data.selectedId);
+      console.log(resp);
       SuccesToast(res.data.message || "Message deleted successfully");
     } catch (error) {
       console.error("DeleteMessage error:", error);
