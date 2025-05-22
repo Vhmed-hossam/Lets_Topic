@@ -473,7 +473,7 @@ export const useAuthStore = create((set, get) => ({
     try {
       const res = await axiosInstance.put("/auth/ver-reset-password", {
         verificationCode: data.verificationCode,
-        newPassword: data.newPassword,
+        newPassword: data.newPassword, 
       });
       SuccesToast(res.data.message);
     } catch (error) {
