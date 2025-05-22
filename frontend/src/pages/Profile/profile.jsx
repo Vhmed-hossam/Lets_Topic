@@ -356,11 +356,11 @@ export default function Profile() {
             <div className=" bg-main/10 rounded-md p-3">
               <div>
                 <h2 className="text-lg font-medium mx-3 flex items-center justify-between">
-                  Profile Combos
+                  Shop
                   <p className="text-sm ms-3 text-base-content/70">Beta</p>
                 </h2>
                 <p className="text-sm ms-3 text-base-content/70">
-                  Check a bunch of ready Customized Combos
+                  Check a bunch of ready Customized Avatars and banners
                 </p>
               </div>
               <div className="space-y-3 p-3">

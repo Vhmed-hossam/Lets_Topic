@@ -16,7 +16,7 @@ export default function Privacy() {
       { opacity: 1, duration: 1, ease: "power4.out", y: 0 }
     );
   });
-  
+
   return (
     <>
       <div
@@ -41,26 +41,28 @@ export default function Privacy() {
                     You do not have any friends.
                   </div>
                 ) : (
-                  friends.map((friend) => {
-                    return (
-                      <Link
-                        to={`all-friends`}
-                        key={friend._id}
-                        className="flex p-3 bg-main/25 gap-3 transition-all hover:bg-main/50 rounded-lg items-center justify-between"
-                      >
-                        <div className="flex flex-1 overflow-x-auto -space-x-7 items-center">
-                          <img
-                            src={friend.profilePic}
-                            alt={friend.username}
-                            className="w-17 h-17 rounded-full object-cover"
-                          />
-                        </div>
-                        <div className="flex items-center justify-end">
-                          <ChevronRight className="size-9" />
-                        </div>
-                      </Link>
-                    );
-                  })
+                  <>
+                    <Link
+                      to={`all-friends`}
+                      className="flex p-3 bg-main/25 gap-3 transition-all hover:bg-main/50 rounded-lg items-center justify-between"
+                    >
+                      {" "}
+                      <div className="flex flex-1 overflow-x-auto -space-x-7 items-center">
+                        {friends.map((friend) => {
+                          return (
+                            <img
+                              src={friend.profilePic}
+                              alt={friend.username}
+                              className="w-17 h-17 rounded-full object-cover"
+                            />
+                          );
+                        })}
+                      </div>
+                      <div className="flex items-center justify-end">
+                        <ChevronRight className="size-9" />
+                      </div>
+                    </Link>
+                  </>
                 )}
               </div>
             </section>
