@@ -10,6 +10,8 @@ export const usePopoversStore = create((set) => ({
   UnfriendPopoverState: false,
   WipePopoverState: false,
   BlockPopoverState: false,
+  EditMessagePopoverState: false,
+  DeleteMessagePopoverState: false,
 
   OpenLogoutPopover: () => set({ LogoutPopoverState: true }),
   CloseLogoutPopover: () => set({ LogoutPopoverState: false }),
@@ -37,4 +39,10 @@ export const usePopoversStore = create((set) => ({
 
   OpenBlockPopover: () => set({ BlockPopoverState: true }),
   CloseBlockPopover: () => set({ BlockPopoverState: false }),
+
+  OpenEditMessagePopover: () => set({ EditMessagePopoverState: true }),
+  CloseEditMessagePopover: () => set({ EditMessagePopoverState: false }),
+
+  OpenDeleteMessagePopover: () => set({ DeleteMessagePopoverState: true }),
+  CloseDeleteMessagePopover: () => set({ DeleteMessagePopoverState: false }),
 }));
