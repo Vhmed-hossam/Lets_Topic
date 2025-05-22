@@ -380,12 +380,6 @@ export const useChatStore = create((set, get) => ({
     set({ isEditing: true });
 
     try {
-      set((state) => ({
-        Messages: state.Messages.map((msg) =>
-          msg._id === messageId ? { ...msg, text: Text, edited: true } : msg
-        ),
-      }));
-
       const res = await axiosInstance.put(
         `/messages/update-message/${messageId}`,
         {
@@ -396,13 +390,7 @@ export const useChatStore = create((set, get) => ({
       set({ Messages: res.data.messages || [] });
       SuccesToast(res.data.message || "Message edited successfully");
     } catch (error) {
-      set((state) => ({
-        Messages: state.Messages.map((msg) =>
-          msg._id === messageId
-            ? { ...msg, text: msg.text, edited: msg.edited }
-            : msg
-        ),
-      }));
+      console.error("EditMessage error:", error);
       ErrorToast(error.response?.data?.error);
     } finally {
       set({ isEditing: false });
