@@ -125,7 +125,6 @@ export const useChatStore = create((set, get) => ({
           voiceMessage: messageData.voiceMessage || null,
         }
       );
-      console.log(res);
       if (res?.data?.NewMessage) {
         playSound(useSettingStore.getState().mySendSound);
         const newMessage = res.data.NewMessage;
@@ -188,7 +187,6 @@ export const useChatStore = create((set, get) => ({
         const isCurrentChat =
           state.SelectedUser?._id === newMessage.senderId ||
           state.SelectedUser?._id === newMessage.receiverId;
-        console.log("newMessage", newMessage);
         if (isCurrentChat) {
           if (
             !isSentMessage &&
@@ -410,7 +408,6 @@ export const useChatStore = create((set, get) => ({
         }
       );
       get().GetMessages(data.selectedId);
-      console.log(res);
       SuccesToast(res.data.message || "Message edited successfully");
     } catch (error) {
       console.error("EditMessage error:", error);
@@ -426,7 +423,6 @@ export const useChatStore = create((set, get) => ({
         `/messages/delete-message/${messageId}`
       );
       get().GetMessages(data.selectedId);
-      console.log(res);
       SuccesToast(res.data.message || "Message deleted successfully");
     } catch (error) {
       console.error("DeleteMessage error:", error);

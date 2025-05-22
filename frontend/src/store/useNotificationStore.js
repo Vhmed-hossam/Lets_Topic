@@ -119,12 +119,7 @@ export const useNotificationStore = create((set, get) => ({
       }
 
       if (receiverIdStr === userIdStr && senderIdStr !== selectedUserId) {
-        console.log(
-          "Incrementing unread for senderId:",
-          senderIdStr,
-          "Message:",
-          message
-        );
+        
         get().incrementUnread(senderIdStr);
       }
     });
@@ -174,16 +169,9 @@ export const useNotificationStore = create((set, get) => ({
         totalUnread: state.totalUnread + 1,
       };
     });
-    console.log("Incrementing unread for chatId:", chatId);
   },
 
   resetUnread: (chatId) => {
-    console.log(
-      "resetUnread called for chatId:",
-      chatId,
-      "Current unreadMessages:",
-      get().unreadMessages
-    );
     set((state) => {
       const currentCount = state.unreadMessages[chatId] || 0;
       const newTotalUnread = Math.max(0, state.totalUnread - currentCount);

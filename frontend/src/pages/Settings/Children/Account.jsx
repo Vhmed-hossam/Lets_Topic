@@ -77,7 +77,6 @@ export default function Account() {
     DeletePopoverState,
     OpenDeletePopover,
   } = usePopoversStore();
-    console.log(authUser);
   return (
     <>
       <AnimatePresence>

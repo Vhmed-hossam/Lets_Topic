@@ -37,12 +37,6 @@ export default function Sidebar() {
       ErrorToast("Please wait a few seconds before selecting another user.");
       return;
     }
-    console.log(
-      "Selecting user:",
-      user._id,
-      "Unread count:",
-      unreadMessages[user._id] || 0
-    );
     SetSelectedUser(user);
     setCanSelect(false);
     setTimeout(() => {

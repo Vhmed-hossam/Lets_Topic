@@ -136,7 +136,6 @@ export default function Notifications() {
   };
 
   if (isFetchingNotifications) return <NotificationSkeleton />;
-  console.log(notifications);
   return (
     <div className="container mx-auto min-h-screen p-6">
       <div className="mt-16 space-y-2">

@@ -55,7 +55,6 @@ export default function Login() {
       validationSchema,
       onSubmit: async () => {
         const response = await Login(values);
-        console.log(response);
         if (response?.data.user.deletionData?.Disabled) {
           OpenRestorePopover();
           return;
