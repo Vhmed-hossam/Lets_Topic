@@ -96,12 +96,6 @@ export default function MediaPopup() {
                 if (item.type === "video") {
                   return (
                     <div key={index}>
-                      <p>
-                        {formatDate(item.createdAt)} , by{" "}
-                        {item.recieverId == authUser.user_id
-                          ? "You"
-                          : SelectedUser.fullName}
-                      </p>
                       <CustomVideoPlayer src={item.videoUrl} />
                     </div>
                   );
@@ -113,12 +107,6 @@ export default function MediaPopup() {
                       className="p-3 border rounded-md space-y-1"
                       style={{ borderColor: myMessageTheme }}
                     >
-                      <p>
-                        {formatDate(item.createdAt)} , by{" "}
-                        {item.recieverId == authUser.user_id
-                          ? "You"
-                          : SelectedUser.fullName}
-                      </p>
                       <MinimalAudioPlayer src={item.voiceUrl} />
                     </div>
                   );
