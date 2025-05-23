@@ -11,6 +11,7 @@ import { Splide, SplideSlide } from "@splidejs/react-splide";
 import { CharThemes } from "../../Data/ChatThemes";
 import { SuccesToast } from "../../components/Toast/Toasters";
 import getContrastingTextColor from "../../helpers/GetContrast";
+import SendLoader from "../../components/Spinner/SendLoader";
 
 export default function Shop() {
   const [updatingIndex, setUpdatingIndex] = useState(null);
@@ -33,65 +34,73 @@ export default function Shop() {
       { opacity: 1, duration: 1, ease: "power4.out", y: 0 }
     );
   });
-  const handleBannerChange = async (input) => {
+  const handleBannerChange = async (input, index) => {
+    setUpdatingIndex(index);
+    setIsUpdatingBanner(true);
     let imageToUse = "";
-
-    if (typeof input === "string") {
-      imageToUse = await fetchImageAsBase64(input);
-      try {
-        await AddBanner({ banner: imageToUse });
-      } catch (error) {
-        console.error("Error updating banner:", error);
-      }
-    } else {
-      const file = input.target.files[0];
-      if (!file) return ErrorToast("No file selected");
-      if (!file.type.startsWith("image/"))
-        return ErrorToast("Invalid file type. Please upload an image.");
-
-      const reader = new FileReader();
-      reader.readAsDataURL(file);
-      reader.onload = async () => {
-        const base64Image = reader.result;
-        try {
-          await AddBanner({ banner: base64Image });
-        } catch (error) {
-          console.error("Error updating banner:", error);
-        }
-      };
-    }
-  };
-
-  const handleProfilePicChange = async (input) => {
-    let imageToUse = "";
-
-    if (typeof input === "string") {
-      imageToUse = await fetchImageAsBase64(input);
-    } else {
-      const file = input.target.files[0];
-      if (!file) return;
-      if (!file.type.startsWith("image/"))
-        return ErrorToast("Invalid file type. Please upload an image.");
-
-      const reader = new FileReader();
-      reader.readAsDataURL(file);
-      reader.onload = async () => {
-        const base64Image = reader.result;
-        try {
-          await UpdateProfile({ profilePic: base64Image });
-        } catch (error) {
-          console.error("Error updating profile picture:", error);
-        }
-      };
-      return;
-    }
 
     try {
-      await UpdateProfile({ profilePic: imageToUse });
+      if (typeof input === "string") {
+        imageToUse = await fetchImageAsBase64(input);
+      } else {
+        const file = input.target.files[0];
+        if (!file) return ErrorToast("No file selected");
+        if (!file.type.startsWith("image/"))
+          return ErrorToast("Invalid file type. Please upload an image.");
+
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = async () => {
+          const base64Image = reader.result;
+          await AddBanner({ banner: base64Image });
+          setUpdatingIndex(null);
+          setIsUpdatingBanner(false);
+        };
+        return;
+      }
+
+      await AddBanner({ banner: imageToUse });
     } catch (error) {
-      console.error("Error updating avatar:", error);
+      console.error("Error updating banner:", error);
+    } finally {
+      setUpdatingIndex(null);
+      setIsUpdatingBanner(false);
     }
   };
+  const handleProfilePicChange = async (input, index) => {
+    setUpdatingIndex(index);
+    setIsUpdatingProfilePic(true);
+    let imageToUse = "";
+
+    try {
+      if (typeof input === "string") {
+        imageToUse = await fetchImageAsBase64(input);
+      } else {
+        const file = input.target.files[0];
+        if (!file) return;
+        if (!file.type.startsWith("image/"))
+          return ErrorToast("Invalid file type. Please upload an image.");
+
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = async () => {
+          const base64Image = reader.result;
+          await UpdateProfile({ profilePic: base64Image });
+          setUpdatingIndex(null);
+          setIsUpdatingProfilePic(false);
+        };
+        return;
+      }
+
+      await UpdateProfile({ profilePic: imageToUse });
+    } catch (error) {
+      console.error("Error updating profile picture:", error);
+    } finally {
+      setUpdatingIndex(null);
+      setIsUpdatingProfilePic(false);
+    }
+  };
+
   return (
     <>
       <div
@@ -142,11 +151,22 @@ export default function Shop() {
                   </div>
                   <button
                     className="btn bg-main"
+                    disabled={IsUpdatingProfilePic}
                     onClick={() => {
-                      handleProfilePicChange(avatar.url);
+                      handleProfilePicChange(avatar.url, index);
                     }}
                   >
-                    Use Avatar
+                    {IsUpdatingProfilePic ? (
+                      <>
+                        {updatingIndex === index ? (
+                          <SendLoader color={"#645EE2"} />
+                        ) : (
+                          "Use Avatar"
+                        )}
+                      </>
+                    ) : (
+                      "Use Avatar"
+                    )}
                   </button>
                   {updatingIndex === index && (
                     <div className="bg-black/50 flex items-center justify-center absolute top-0 bottom-0 left-0 right-0">
@@ -189,12 +209,21 @@ export default function Shop() {
                     </div>
                   </div>
                   <button
-                    className="btn bg-main"
-                    onClick={() => {
-                      handleBannerChange(Banners.url);
-                    }}
+                    className="btn bg-main flex items-center gap-2"
+                    disabled={IsUpdatingBanner}
+                    onClick={() => handleBannerChange(Banners.url, index)}
                   >
-                    Use Banner
+                    {IsUpdatingBanner ? (
+                      <>
+                        {updatingIndex === index ? (
+                          <SendLoader color={"#645EE2"} />
+                        ) : (
+                          "Use Banner"
+                        )}
+                      </>
+                    ) : (
+                      "Use Banner"
+                    )}
                   </button>
                   {updatingIndex === index && (
                     <div className="bg-black/50 flex items-center justify-center absolute top-0 bottom-0 left-0 right-0">
@@ -230,23 +259,26 @@ export default function Shop() {
                   <div className="chat flex flex-col p-2 space-y-3">
                     <div className="flex flex-row items-center justify-start">
                       <div
-                        className="chat-bubble"
-                        style={{ backgroundColor: themes.SenderTheme ,color: getContrastingTextColor(themes.SenderTheme) }}
+                        className="chat-bubble rounded-xl shadow-md transition-all duration-300"
+                        style={{
+                          backgroundColor: themes.SenderTheme,
+                          color: getContrastingTextColor(themes.SenderTheme),
+                        }}
                       >
-                        <div className="p-3">
-                          <h2>This is my Sender Theme</h2>
-                        </div>
+                        <p className="text-sm px-3 py-2">
+                          This is my Sender Theme
+                        </p>
                       </div>
                     </div>
                     <div className="flex flex-row items-center justify-end">
                       <div
-                        className="chat-bubble"
-                        style={{ backgroundColor: themes.myTheme,color: getContrastingTextColor(themes.myTheme) }}
-
+                        className="chat-bubble rounded-xl shadow-md transition-all duration-300"
+                        style={{
+                          backgroundColor: themes.myTheme,
+                          color: getContrastingTextColor(themes.myTheme),
+                        }}
                       >
-                        <div className="p-3">
-                          <h2>This is my Theme</h2>
-                        </div>
+                        <p className="text-sm px-3 py-2">This is my Theme</p>
                       </div>
                     </div>
                   </div>

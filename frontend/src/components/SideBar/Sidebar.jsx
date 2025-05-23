@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Users as UsersIcon, UserPlus, CheckCheck } from "lucide-react";
+import { Users as UsersIcon, UserPlus, CheckCheck, ShoppingBag, CalendarHeart, ShoppingCart } from "lucide-react";
 import { useChatStore } from "../../store/useChatStore";
 import SidebarSkeleton from "../Skeletons/SidebarSkeleton";
 import { useAuthStore } from "../../store/useAuthStore";
@@ -153,6 +153,14 @@ export default function Sidebar() {
           <div className="border-t border-base-300 p-1.5 py-3 hover:bg-main/10 transition-all">
             <div className="flex flex-row items-center gap-2 max-lg:justify-center">
               <UserPlus />
+              <h2 className="max-lg:hidden">Add friend</h2>
+            </div>
+          </div>
+        </Link>
+        <Link to="/shop">
+          <div className="border-t border-base-300 p-1.5 py-3 hover:bg-main/10 transition-all">
+            <div className="flex flex-row items-center gap-2 max-lg:justify-center">
+              <ShoppingCart />
               <h2 className="max-lg:hidden">Add friend</h2>
             </div>
           </div>

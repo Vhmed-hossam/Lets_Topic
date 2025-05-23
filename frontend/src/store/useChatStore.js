@@ -371,14 +371,11 @@ export const useChatStore = create((set, get) => ({
   },
   EditMessage: async (data) => {
     const { messageId, Text, userToChatId } = data;
-
     if (!messageId || !Text?.trim() || !userToChatId) {
       ErrorToast("Message ID, text, and recipient ID are required");
       return;
     }
-
     set({ isEditing: true });
-
     try {
       const res = await axiosInstance.put(
         `/messages/update-message/${messageId}`,
