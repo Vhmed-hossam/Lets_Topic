@@ -1,7 +1,6 @@
 import { create } from "zustand";
 import { axiosInstance } from "../lib/axios";
 import playSound from "../helpers/PlaySound";
-import MessageReceivedSound from "../../Sounds/Pinglet Pop.mp3";
 import { useAuthStore } from "./useAuthStore";
 import { useNotificationStore } from "./useNotificationStore";
 import { ErrorToast, SuccesToast } from "../components/Toast/Toasters";

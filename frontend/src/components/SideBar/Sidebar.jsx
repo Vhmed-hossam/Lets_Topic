@@ -1,5 +1,10 @@
-import React, { useEffect, useState } from "react";
-import { Users as UsersIcon, UserPlus, CheckCheck, ShoppingBag, CalendarHeart, ShoppingCart } from "lucide-react";
+import { useEffect, useState } from "react";
+import {
+  Users as UsersIcon,
+  UserPlus,
+  CheckCheck,
+  ShoppingCart,
+} from "lucide-react";
 import { useChatStore } from "../../store/useChatStore";
 import SidebarSkeleton from "../Skeletons/SidebarSkeleton";
 import { useAuthStore } from "../../store/useAuthStore";
@@ -7,7 +12,7 @@ import { useFriendsStore } from "../../store/useFriendsStore";
 import { useNotificationStore } from "../../store/useNotificationStore";
 import { Link } from "react-router-dom";
 import { useSettingStore } from "../../store/useSettingsStore";
-import { ErrorToast, SuccesToast } from "../Toast/Toasters";
+import { ErrorToast } from "../Toast/Toasters";
 import { defaultImage } from "../../Data/Avatars";
 import filterUnreadFromFriends from "../../Tasks/filterUnread";
 

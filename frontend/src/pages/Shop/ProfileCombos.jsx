@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { Banners } from "../../Data/Banners";
 import { useAuthStore } from "../../store/useAuthStore";
 import Spinner from "../../components/Spinner/spinner";
@@ -315,7 +315,7 @@ export default function Shop() {
               }}
             >
               {Sounds.map((sound, index) => (
-                <SplideSlide
+                <SplideSl
                   key={index}
                   className="flex flex-col gap-3 bg-main/25 p-4 rounded-xl overflow-hidden"
                 >
@@ -345,7 +345,7 @@ export default function Shop() {
                       Set as Receive
                     </button>
                   </div>
-                </SplideSlide>
+                </SplideSl>
               ))}
             </Splide>
           </section>
