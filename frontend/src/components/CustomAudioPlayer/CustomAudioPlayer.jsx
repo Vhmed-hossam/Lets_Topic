@@ -65,7 +65,7 @@ export default function MinimalAudioPlayer({ src }) {
   }
 
   return (
-    <div className="flex items-center w-full gap-3 dark:bg-gray-800 p-3 bg-white rounded-full">
+    <div className="flex items-center gap-3 dark:bg-gray-800 p-3 bg-white rounded-full">
       <audio ref={audioRef} src={src} preload="metadata" />
       <button onClick={togglePlay} className="text-gray-800 dark:text-white">
         {isPlaying ? <Pause size={20} /> : <Play size={20} />}

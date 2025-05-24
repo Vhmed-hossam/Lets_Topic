@@ -274,11 +274,11 @@ export default function Chatinput() {
         </div>
       )}
       {audioUrl && (
-        <div className="mb-3 flex items-center gap-2">
+        <div className="mb-3 flex justify-center w-full flex-row items-center gap-2">
           <MinimalAudioPlayer src={audioUrl} />
           <button
             onClick={sendVoiceMessage}
-            className="btn rounded-lg bg-main-shiny transition-all"
+            className="btn rounded-lg bg-main-shiny  transition-all"
             disabled={isSending}
           >
             {isSending ? (
