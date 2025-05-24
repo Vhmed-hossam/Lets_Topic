@@ -206,9 +206,15 @@ export const UpdateMessage = async (req, res) => {
     });
   }
 
-  try {
-    const message = await Message.findById(messageId);
+  if (NewText.trim() === "") {
+    return res.status(400).json({ error: "New text cannot be empty" });
+  }
 
+  try {
+    const message = await Message.findById(messageId).populate("text");
+    if (NewText === message.text) {
+      return res.status(400).json({ error: "No Changes occoured" });
+    }
     if (!message) {
       return res.status(404).json({ error: "Message not found" });
     }
