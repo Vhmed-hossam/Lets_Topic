@@ -315,7 +315,7 @@ export default function Shop() {
               }}
             >
               {Sounds.map((sound, index) => (
-                <SplideSl
+                <SplideSlide
                   key={index}
                   className="flex flex-col gap-3 bg-main/25 p-4 rounded-xl overflow-hidden"
                 >
@@ -345,7 +345,7 @@ export default function Shop() {
                       Set as Receive
                     </button>
                   </div>
-                </SplideSl>
+                </SplideSlide>
               ))}
             </Splide>
           </section>
