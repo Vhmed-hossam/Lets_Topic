@@ -17,6 +17,6 @@ export const Sounds = [
   {
     name: "Bell",
     url: "/Sounds/Bell.mp3",
-    cookieSavedName: "-",
+    cookieSavedName: "bell",
   },
 ];
