@@ -1,8 +1,8 @@
 import { create } from "zustand";
 import Cookie from "js-cookie";
 import getInitialTheme from "../helpers/getInitialTheme";
-import Sent from "../../Sounds/Main.mp3";
-import MessageRecieved from "../../Sounds/MessageReceived.mp3";
+import Sent from "../../Sounds/Bell.mp3";
+import MessageRecieved from "../../Sounds/Pinglet Pop.mp3";
 export const useSettingStore = create((set) => ({
   theme: getInitialTheme(),
   SetTheme: async (theme) => {

@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import { axiosInstance } from "../lib/axios";
 import playSound from "../helpers/PlaySound";
-import MessageReceivedSound from "../../Sounds/MessageReceived.mp3";
+import MessageReceivedSound from "../../Sounds/Pinglet Pop.mp3";
 import { useAuthStore } from "./useAuthStore";
 import { useNotificationStore } from "./useNotificationStore";
 import { ErrorToast, SuccesToast } from "../components/Toast/Toasters";
@@ -114,6 +114,7 @@ export const useChatStore = create((set, get) => ({
         status: error.response?.status,
       };
     } finally {
+      get().getChatMedia(SelectedUser._id);
       const unreadCount =
         useNotificationStore.getState().unreadMessages[SelectedUser._id] || 0;
       if (unreadCount > 0) {
