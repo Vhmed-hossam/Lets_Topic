@@ -97,7 +97,7 @@ export const useChatStore = create((set, get) => ({
         }
       );
       if (res?.data?.NewMessage) {
-        playSound(useSettingStore.getState().mySendSound);
+        playSound(`/Sounds/${useSettingStore.getState().mySendSound}.mp3`);
         const newMessage = res.data.NewMessage;
         set({ Messages: [...Messages, newMessage] });
         return { success: true, message: newMessage };
@@ -164,7 +164,9 @@ export const useChatStore = create((set, get) => ({
             !isSentMessage &&
             newMessage.senderId === state.SelectedUser?._id
           ) {
-            playSound(MessageReceivedSound);
+            playSound(
+              `/Sounds/${useSettingStore.getState().myReceiveSound}.mp3`
+            );
             get().markMessagesAsRead(newMessage.senderId, "newMessage");
             useNotificationStore.getState().resetUnread(newMessage.senderId);
           }

@@ -1,8 +1,6 @@
 import { create } from "zustand";
 import Cookie from "js-cookie";
 import getInitialTheme from "../helpers/getInitialTheme";
-import Sent from "../../Sounds/Bell.mp3";
-import MessageRecieved from "../../Sounds/Pinglet Pop.mp3";
 export const useSettingStore = create((set) => ({
   theme: getInitialTheme(),
   SetTheme: async (theme) => {
@@ -20,12 +18,12 @@ export const useSettingStore = create((set) => ({
     Cookie.set("my-sender-theme", sendertheme);
     set({ mySenderTheme: sendertheme });
   },
-  mySendSound: Cookie.get("my-send-sound") || Sent,
+  mySendSound: Cookie.get("my-send-sound") || 'Mainframe Pulse',
   SetMySendSound: async (sound) => {
     Cookie.set("my-send-sound", sound);
     set({ mySendSound: sound });
   },
-  myReceiveSound: Cookie.get("my-receive-sound") || MessageRecieved,
+  myReceiveSound: Cookie.get("my-receive-sound") || 'Pinglet Pop',
   SetMyReceiveSound: async (sound) => {
     Cookie.set("my-receive-sound", sound);
     set({ myReceiveSound: sound });

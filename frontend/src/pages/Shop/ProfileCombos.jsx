@@ -12,7 +12,8 @@ import { CharThemes } from "../../Data/ChatThemes";
 import { SuccesToast } from "../../components/Toast/Toasters";
 import getContrastingTextColor from "../../helpers/GetContrast";
 import SendLoader from "../../components/Spinner/SendLoader";
-
+import MinimalBoxPlayer from "../../components/MinimalBoxPlayer/MinimalBoxPlayer";
+import { Sounds } from "../../Data/Sounds";
 export default function Shop() {
   const [updatingIndex, setUpdatingIndex] = useState(null);
   const [IsUpdatingBanner, setIsUpdatingBanner] = useState(false);
@@ -155,6 +156,7 @@ export default function Shop() {
                     onClick={() => {
                       handleProfilePicChange(avatar.url, index);
                     }}
+                    style={{ color: getContrastingTextColor("#645EE2") }}
                   >
                     {IsUpdatingProfilePic ? (
                       <>
@@ -211,6 +213,7 @@ export default function Shop() {
                   <button
                     className="btn bg-main flex items-center gap-2"
                     disabled={IsUpdatingBanner}
+                    style={{ color: getContrastingTextColor("#645EE2") }}
                     onClick={() => handleBannerChange(Banners.url, index)}
                   >
                     {IsUpdatingBanner ? (
@@ -284,6 +287,7 @@ export default function Shop() {
                   </div>
                   <button
                     className="btn bg-main"
+                    style={{ color: getContrastingTextColor("#645EE2") }}
                     onClick={() => {
                       SetMyMessageTheme(themes.myTheme);
                       SetMySenderTheme(themes.SenderTheme);
@@ -292,6 +296,55 @@ export default function Shop() {
                   >
                     Use Theme
                   </button>
+                </SplideSlide>
+              ))}
+            </Splide>
+          </section>
+          <section className="mt-4 flex flex-col gap-2">
+            <h2 className="text-lg font-medium">Chat Sounds</h2>
+            <Splide
+              options={{
+                type: "loop",
+                drag: "free",
+                focus: "center",
+                gap: "2rem",
+                perPage: 2,
+                autoScroll: {
+                  speed: 2,
+                },
+              }}
+            >
+              {Sounds.map((sound, index) => (
+                <SplideSlide
+                  key={index}
+                  className="flex flex-col gap-3 bg-main/25 p-4 rounded-xl overflow-hidden"
+                >
+                  <h2 className="text-lg font-medium">
+                    {index + 1} : {sound.name}
+                  </h2>
+                  <MinimalBoxPlayer src={sound.url} name={sound.name} />
+                  <div className="flex gap-2 items-center justify-between">
+                    <button
+                      className="btn flex-1 bg-main"
+                      style={{ color: getContrastingTextColor("#645EE2") }}
+                      onClick={() => {
+                        SetMySendSound(sound.name);
+                        SuccesToast("Send sound changed successfully");
+                      }}
+                    >
+                      Set as Send
+                    </button>
+                    <button
+                      className="btn flex-1 bg-main"
+                      style={{ color: getContrastingTextColor("#645EE2") }}
+                      onClick={() => {
+                        SetMyReceiveSound(sound.name);
+                        SuccesToast("Receive sound changed successfully");
+                      }}
+                    >
+                      Set as Receive
+                    </button>
+                  </div>
                 </SplideSlide>
               ))}
             </Splide>

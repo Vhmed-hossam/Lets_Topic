@@ -161,7 +161,7 @@ export default function Sidebar() {
           <div className="border-t border-base-300 p-1.5 py-3 hover:bg-main/10 transition-all">
             <div className="flex flex-row items-center gap-2 max-lg:justify-center">
               <ShoppingCart />
-              <h2 className="max-lg:hidden">Add friend</h2>
+              <h2 className="max-lg:hidden">Shop</h2>
             </div>
           </div>
         </Link>
