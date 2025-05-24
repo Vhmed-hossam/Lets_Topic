@@ -20,7 +20,7 @@ export default function EditPopover({ messageData }) {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="fixed inset-0 flex items-center justify-center z-50"
+      className="fixed inset-0 flex items-center justify-center z-50 bg-black-full/40"
     >
       <motion.div
         initial={{ opacity: 0, scale: 0.9 }}
@@ -55,7 +55,13 @@ export default function EditPopover({ messageData }) {
               color: getContrastingTextColor(myMessageTheme),
             }}
           >
-            {messageData.text}
+            {messageData?.image && (
+              <img
+                src={messageData.image}
+                className="w-full max-w-[300px] rounded-md mb-2 "
+              />
+            )}
+            {messageData?.text}
           </div>
         </div>
         <div className="gap-3 p-2 flex flex-wrap justify-center items-center flex-row">
