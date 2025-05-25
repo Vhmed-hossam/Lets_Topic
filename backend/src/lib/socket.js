@@ -81,47 +81,6 @@ io.on("connection", (socket) => {
     socket.to(room).emit("userStoppedTyping", { senderId });
   });
 
-  socket.on("sendFriendRequest", ({ senderId, recipientId, requestId }) => {
-    if (!senderId || !recipientId || !requestId) {
-      console.error("Invalid sendFriendRequest data:", {
-        senderId,
-        recipientId,
-        requestId,
-      });
-      return;
-    }
-    socket.to(`user:${recipientId}`).emit("friendRequestReceived", {
-      senderId,
-      requestId,
-    });
-  });
-
-  socket.on("acceptFriendRequest", ({ senderId, recipientId }) => {
-    if (!senderId || !recipientId) {
-      console.error("Invalid acceptFriendRequest data:", {
-        senderId,
-        recipientId,
-      });
-      return;
-    }
-    socket.to(`user:${senderId}`).emit("friendRequestAccepted", {
-      recipientId,
-    });
-  });
-
-  socket.on("declineFriendRequest", ({ senderId, recipientId }) => {
-    if (!senderId || !recipientId) {
-      console.error("Invalid declineFriendRequest data:", {
-        senderId,
-        recipientId,
-      });
-      return;
-    }
-    socket.to(`user:${senderId}`).emit("friendRequestDeclined", {
-      recipientId,
-    });
-  });
-
   socket.on("disconnect", () => {
     if (userId) {
       delete userSocketMap[userId];
