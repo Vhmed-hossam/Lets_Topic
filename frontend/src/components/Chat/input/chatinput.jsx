@@ -1,242 +1,34 @@
-import React, { useRef, useState, useEffect } from "react";
-import { useChatStore } from "../../../store/useChatStore";
-import { useAuthStore } from "../../../store/useAuthStore";
-import { ErrorToast } from "../../Toast/Toasters";
 import { Plus, Send, X, Mic, Play } from "lucide-react";
 import SendLoader from "../../Spinner/SendLoader";
-import onEscapeKeyPress from "../../../Events/onEscapeKeyPress";
-import { useSettingStore } from "../../../store/useSettingsStore";
 import MinimalAudioPlayer from "../../CustomAudioPlayer/CustomAudioPlayer";
 import { useTextColor } from "../../../helpers/Colors";
-
+import useChatinputLogic from "../../../Funcs/ChatInputFunc";
 export default function Chatinput() {
-  const [text, setText] = useState("");
   const textColor = useTextColor();
-
-  const [mediaPreview, setMediaPreview] = useState(null);
-  const [mediaType, setMediaType] = useState(null);
-  const [imageBase64, setImageBase64] = useState(null);
-  const [videoBase64, setVideoBase64] = useState(null);
-  const [isSending, setIsSending] = useState(false);
-  const [isTyping, setIsTyping] = useState(false);
-  const [isRecording, setIsRecording] = useState(false);
-  const [audioBlob, setAudioBlob] = useState(null);
-  const [audioUrl, setAudioUrl] = useState("");
-  const { SendMessage, SelectedUser, emitTyping, emitStopTyping } =
-    useChatStore();
-  const { authUser } = useAuthStore();
-  const fileInput = useRef(null);
-  const mediaRecorderRef = useRef(null);
-  const chunks = useRef([]);
-  const { myMessageTheme } = useSettingStore();
-  useEffect(() => {
-    if (!SelectedUser?._id || !authUser?.user?._id) {
-      console.warn("Cannot emit typing: Missing SelectedUser or authUser");
-      return;
-    }
-    if (!useAuthStore.getState().socket?.connected) {
-      console.warn("Cannot emit typing: Socket not connected");
-      return;
-    }
-
-    let typingTimeout;
-    if (text && !isTyping) {
-      setIsTyping(true);
-      emitTyping({
-        senderId: authUser.user._id,
-        receiverId: SelectedUser._id,
-      });
-    } else if (!text && isTyping) {
-      setIsTyping(false);
-      emitStopTyping({
-        senderId: authUser.user._id,
-        receiverId: SelectedUser._id,
-      });
-    }
-
-    if (text) {
-      typingTimeout = setTimeout(() => {
-        setIsTyping(false);
-        emitStopTyping({
-          senderId: authUser.user._id,
-          receiverId: SelectedUser._id,
-        });
-      }, 2000);
-    }
-
-    return () => {
-      if (typingTimeout) clearTimeout(typingTimeout);
-    };
-  }, [text, isTyping, authUser, SelectedUser, emitTyping, emitStopTyping]);
-
-  const startRecording = async () => {
-    try {
-      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-      mediaRecorderRef.current = new MediaRecorder(stream);
-      mediaRecorderRef.current.ondataavailable = (e) => {
-        chunks.current.push(e.data);
-      };
-      mediaRecorderRef.current.onstop = () => {
-        const blob = new Blob(chunks.current, { type: "audio/webm" });
-        setAudioBlob(blob);
-        setAudioUrl(URL.createObjectURL(blob));
-        chunks.current = [];
-      };
-      mediaRecorderRef.current.start();
-      setIsRecording(true);
-    } catch (error) {
-      console.error("Error accessing microphone:", error);
-      ErrorToast("Failed to access microphone.");
-    }
-  };
-
-  const stopRecording = () => {
-    mediaRecorderRef.current.stop();
-    setIsRecording(false);
-  };
-
-  const blobToBase64 = (blob) => {
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.onloadend = () => resolve(reader.result.split(",")[1]);
-      reader.onerror = reject;
-      reader.readAsDataURL(blob);
-    });
-  };
-
-  const sendVoiceMessage = async () => {
-    if (!audioBlob) {
-      console.error("No audioBlob to send");
-      return;
-    }
-    try {
-      setIsSending(true);
-      const base64Audio = await blobToBase64(audioBlob);
-
-      await SendMessage({
-        text: "",
-        image: null,
-        video: null,
-        voiceMessage: base64Audio,
-      });
-
-      setAudioBlob(null);
-      setAudioUrl("");
-    } catch (error) {
-      console.error("Error sending voice message:", error);
-      ErrorToast(
-        error?.response?.data?.error || "Failed to send voice message."
-      );
-    } finally {
-      setIsSending(false);
-    }
-  };
-
-  async function handleMediaUpload(file) {
-    try {
-      if (!file) {
-        ErrorToast("No file selected.");
-        return;
-      }
-      if (file.type.startsWith("image/")) {
-        const reader = new FileReader();
-        reader.onload = () => {
-          const result = reader.result;
-          setMediaPreview(result);
-          setMediaType("image");
-          setImageBase64(result);
-          setVideoBase64(null);
-        };
-        reader.onerror = () => {
-          ErrorToast("Failed to read the image file.");
-        };
-        reader.readAsDataURL(file);
-      } else if (file.type.startsWith("video/")) {
-        const maxSize = 20 * 1024 * 1024;
-        if (file.size > maxSize) {
-          ErrorToast("Video size exceeds 20MB limit.");
-          return;
-        }
-        const reader = new FileReader();
-        reader.onload = () => {
-          const result = reader.result;
-          setMediaPreview(result);
-          setMediaType("video");
-          setVideoBase64(result.split(",")[1]);
-          setImageBase64(null);
-        };
-        reader.onerror = () => {
-          ErrorToast("Failed to read the video file.");
-        };
-        reader.readAsDataURL(file);
-      } else {
-        ErrorToast("Invalid file type. Please upload an image or video.");
-        return;
-      }
-    } catch (error) {
-      console.error("Error uploading media:", error);
-      ErrorToast("Failed to upload media.");
-    }
-  }
-
-  function removeMedia() {
-    setMediaPreview(null);
-    setMediaType(null);
-    setImageBase64(null);
-    setVideoBase64(null);
-    if (fileInput.current) fileInput.current.value = "";
-  }
-  async function handleSend(e) {
-    e.preventDefault();
-    if (!text.trim() && !imageBase64 && !videoBase64) {
-      ErrorToast("Cannot send empty message, no image, or no video selected.");
-      return;
-    }
-    if (!SelectedUser?._id || !authUser?.user?._id) {
-      ErrorToast("Cannot send message: No user selected");
-      console.error("Send failed: Missing SelectedUser or authUser");
-      return;
-    }
-
-    try {
-      setIsSending(true);
-      await SendMessage({
-        text: text.trim(),
-        image: imageBase64,
-        video: videoBase64,
-        voiceMessage: null,
-      });
-      setText("");
-      removeMedia();
-      if (isTyping) {
-        setIsTyping(false);
-        emitStopTyping({
-          senderId: authUser.user._id,
-          receiverId: SelectedUser._id,
-        });
-      }
-    } catch (error) {
-      console.error(error);
-      ErrorToast(error?.response?.data?.error || "Failed to send message.");
-    } finally {
-      setIsSending(false);
-    }
-  }
-
-  onEscapeKeyPress();
-  const textareaRef = useRef(null);
-
-  const adjustTextareaHeight = () => {
-    const textarea = textareaRef.current;
-    if (textarea) {
-      textarea.style.height = "auto";
-      const maxHeight = 6 * 24;
-      textarea.style.height = `${Math.min(textarea.scrollHeight, maxHeight)}px`;
-    }
-  };
-  useEffect(() => {
-    adjustTextareaHeight();
-  }, [text]);
+   const {
+    text,
+    setText,
+    fileInput,
+    textareaRef,
+    textAreaHandlers,
+    isSending,
+    handleSend,
+    mediaPreview,
+    mediaType,
+    handleMediaUpload,
+    removeMedia,
+    imageBase64,
+    videoBase64,
+    startRecording,
+    stopRecording,
+    isRecording,
+    audioUrl,
+    audioBlob,
+    sendVoiceMessage,
+    setAudioBlob,
+    setAudioUrl,
+    myMessageTheme,
+  } = useChatinputLogic();
   return (
     <div className="p-2 w-full">
       {mediaPreview && (
