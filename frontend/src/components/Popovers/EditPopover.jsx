@@ -14,7 +14,6 @@ export default function EditPopover({ messageData }) {
   useEffect(() => {
     setNewText(messageData.text);
   }, []);
-  console.log(messageData);
   return (
     <motion.div
       initial={{ opacity: 0 }}
@@ -32,16 +31,14 @@ export default function EditPopover({ messageData }) {
         }`}
         style={{ borderColor: myMessageTheme }}
       >
-        <div
-          onClick={CloseEditMessagePopover}
-          className="flex flex-row items-center gap-2"
-        >
+        <div className="flex flex-row items-center gap-2">
           <button
             style={{
               color: getContrastingTextColor(myMessageTheme),
               backgroundColor: myMessageTheme,
             }}
             className="btn p-2 rounded-full transition-all hover:opacity-80"
+            onClick={CloseEditMessagePopover}
           >
             <X />
           </button>

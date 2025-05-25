@@ -373,10 +373,6 @@ export const useChatStore = create((set, get) => ({
   },
   EditMessage: async (data) => {
     const { messageId, Text, userToChatId } = data;
-    if (!messageId || !Text?.trim() || !userToChatId) {
-      ErrorToast("Message ID, text, and recipient ID are required");
-      return;
-    }
     set({ isEditing: true });
     try {
       const res = await axiosInstance.put(
@@ -396,14 +392,18 @@ export const useChatStore = create((set, get) => ({
     }
   },
 
-  DeleteMessage: async (messageId) => {
+  DeleteMessage: async (data) => {
+    const { messageId, userToChatId } = data;
     set({ isDeleting: true });
     try {
       const res = await axiosInstance.delete(
-        `/messages/delete-message/${messageId}`
+        `/messages/delete-message/${messageId}`,
+        {
+          data: { userToChatId },
+        }
       );
-      const resp = get().GetMessages(data.selectedId);
-      console.log(resp);
+      console.log(res.data);
+      set({ Messages: res.data.messages || [] });
       SuccesToast(res.data.message || "Message deleted successfully");
     } catch (error) {
       console.error("DeleteMessage error:", error);

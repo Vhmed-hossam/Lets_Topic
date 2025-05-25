@@ -17,8 +17,10 @@ import renderTextWithLinks from "../../helpers/renderTLink";
 import { AnimatePresence } from "framer-motion";
 import EditPopover from "../Popovers/EditPopover";
 import { usePopoversStore } from "../../store/usePopoversStore";
+import DeletePopover from "../Popovers/DeletePopover";
 export default function Chat() {
   const [Data, setData] = useState(null);
+  const [MessageDeletionData, setMessageDeletionData] = useState("");
   const scrollRef = useRef(null);
   const {
     Messages,
@@ -31,8 +33,12 @@ export default function Chat() {
     UnsubscribeFromMessages,
     SetSelectedUser,
   } = useChatStore();
-  const { EditMessagePopoverState, OpenEditMessagePopover } =
-    usePopoversStore();
+  const {
+    EditMessagePopoverState,
+    OpenEditMessagePopover,
+    DeleteMessagePopoverState,
+    OpenDeleteMessagePopover,
+  } = usePopoversStore();
   const { authUser } = useAuthStore();
   const { theme, myMessageTheme, mySenderTheme } = useSettingStore();
   const { sendFriendRequest, SendMessage, friends } = useFriendsStore();
@@ -76,6 +82,11 @@ export default function Chat() {
       {EditMessagePopoverState && (
         <AnimatePresence>
           <EditPopover messageData={Data} />
+        </AnimatePresence>
+      )}
+      {DeleteMessagePopoverState && (
+        <AnimatePresence>
+          <DeletePopover messageData={MessageDeletionData} />
         </AnimatePresence>
       )}
       <div
@@ -161,7 +172,6 @@ export default function Chat() {
                 const textColor = getContrastingTextColor(
                   isMine ? myMessageTheme : mySenderTheme
                 );
-
                 return (
                   <div
                     key={message._id}
@@ -191,7 +201,10 @@ export default function Chat() {
                           <div className="hidden group-hover:flex">
                             <div className="flex gap-2 text-zinc-500">
                               <button
-                                onClick={() => {}}
+                                onClick={() => {
+                                  setMessageDeletionData(message);
+                                  OpenDeleteMessagePopover();
+                                }}
                                 className="cursor-pointer"
                               >
                                 <Trash size={20} />
