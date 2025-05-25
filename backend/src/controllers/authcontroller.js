@@ -219,6 +219,7 @@ export const login = async (req, res) => {
         isVerified: user.isVerified,
         createdAt: user.createdAt,
         updatedAt: user.updatedAt,
+        friends: user.friends,
         lastLoggedIn: user.lastLoggedIn,
       },
     });
