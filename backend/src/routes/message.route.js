@@ -20,7 +20,7 @@ router.get("/unread-count/:userId", protectRoute, getUnreadCount);
 router.get("/:id", protectRoute, getMessages);
 router.post("/send-message/:receiverId", protectRoute, SendMessage);
 router.put("/update-message/:id", protectRoute, UpdateMessage);
-router.delete("/delete-message/:id", protectRoute, DeleteMessage);
+router.delete("/delete-message/:messageId", protectRoute, DeleteMessage);
 router.put("/mark-read/:senderId", protectRoute, markAsRead);
 router.get("/chat-media/:id", protectRoute, getChatMedia);
 router.put("/reset-all-unread/:userId", protectRoute, SetAllRead);

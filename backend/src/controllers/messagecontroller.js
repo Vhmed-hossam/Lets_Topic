@@ -169,7 +169,7 @@ export const SendMessage = async (req, res) => {
 };
 
 export const DeleteMessage = async (req, res) => {
-  const { id: messageId } = req.params;
+  const { messageId } = req.params;
   const { userToChatId } = req.body;
   const myId = req.user._id;
 
