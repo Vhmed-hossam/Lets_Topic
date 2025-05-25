@@ -15,9 +15,9 @@ import { Pencil, Trash } from "lucide-react";
 import { defaultImage } from "../../Data/Avatars";
 import renderTextWithLinks from "../../helpers/renderTLink";
 import { AnimatePresence } from "framer-motion";
-import EditPopover from "../Popovers/EditPopover";
 import { usePopoversStore } from "../../store/usePopoversStore";
-import DeletePopover from "../Popovers/DeletePopover";
+import DeletePopover from "../Popovers/DeleteMPopover";
+import EditMessagePopover from "../Popovers/EditMPopover";
 export default function Chat() {
   const [Data, setData] = useState(null);
   const [MessageDeletionData, setMessageDeletionData] = useState("");
@@ -81,7 +81,7 @@ export default function Chat() {
     <>
       {EditMessagePopoverState && (
         <AnimatePresence>
-          <EditPopover messageData={Data} />
+          <EditMessagePopover messageData={Data} />
         </AnimatePresence>
       )}
       {DeleteMessagePopoverState && (

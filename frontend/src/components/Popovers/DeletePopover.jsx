@@ -1,71 +1,98 @@
 import { motion } from "framer-motion";
 import { X } from "lucide-react";
 import { OctagonAlert } from "lucide-react";
+import { useAuthStore } from "../../store/useAuthStore";
 import { usePopoversStore } from "../../store/usePopoversStore";
 import { useSettingStore } from "../../store/useSettingsStore";
 import getContrastingTextColor from "../../helpers/GetContrast";
+import { Link } from "react-router-dom";
 import SendLoader from "../Spinner/SendLoader";
-import { useChatStore } from "../../store/useChatStore";
-export default function DeletePopover({ messageData }) {
+import { ErrorToast } from "../Toast/Toasters";
+import { useState } from "react";
+export default function DeletePopover() {
   const { theme } = useSettingStore();
-  const { CloseDeleteMessagePopover } = usePopoversStore();
-  const { isDeleting, DeleteMessage } = useChatStore();
+  const { authUser, DeleteAccount, isDeleting, isDeleted } = useAuthStore();
+  const [Password, setPassword] = useState("");
+  const { CloseDeletePopover } = usePopoversStore();
   return (
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="fixed inset-0 flex items-center justify-center z-50 bg-black-full/40"
+      className="fixed inset-0 bg-black-full/40 flex items-center justify-center z-50"
     >
       <motion.div
         initial={{ opacity: 0, scale: 0.9 }}
         animate={{ opacity: 1, scale: 1 }}
         exit={{ opacity: 0, scale: 0.9 }}
         transition={{ duration: 0.15 }}
-        className={`flex border flex-col gap-5 overflow-hidden border-caution rounded-lg shadow-lg w-11/12 max-w-md p-4 relative ${
+        className={`flex border border-very-caution flex-col gap-5 overflow-hidden rounded-lg shadow-lg w-11/12 max-w-md p-4 relative ${
           theme === "dark" ? "bg-black-full" : "bg-white"
         }`}
       >
-        <div className="flex flex-row items-center gap-2">
+        <div onClick={CloseDeletePopover}>
           <button
-            style={{
-              color: getContrastingTextColor("#E25E60"),
-            }}
-            className="btn p-2 rounded-full transition-all hover:opacity-80 bg-caution"
-            onClick={CloseDeleteMessagePopover}
+            style={{ color: getContrastingTextColor("#BB0C0F") }}
+            className="btn p-2 rounded-full bg-very-caution transition-all hover:bg-caution"
           >
             <X />
           </button>
-          <h2 className="text-lg">Delete message</h2>
         </div>
-        <div className="w-full relative rounded-lg flex items-center justify-center chat">
-          <div className="flex flex-col gap-2 items-center">
-            <OctagonAlert className="text-caution size-20" />
-            <p className="text-lg text-center">
-              Are you sure you want to delete that message?
+        <div className="flex flex-col items-center gap-2">
+          <OctagonAlert className="size-20 text-very-caution" />
+          <h2
+            className={`text-xl font-bold text-center ${
+              theme === "dark" ? "text-white" : "text-black-full"
+            }`}
+          >
+            Delete your account
+          </h2>
+          {!isDeleted && (
+            <p className="text-center text-base-content/70">
+              please enter your password to continue
             </p>
+          )}
+        </div>
+        {isDeleted ? (
+          <div className="gap-3 p-2 flex flex-wrap justify-center items-center flex-row">
+            <Link to="/confirm-delete-account" className="w-full">
+              <button className="w-full transition-all hover:bg-caution bg-very-caution p-2 rounded-lg px-4 text-white">
+                {isDeleting ? (
+                  <SendLoader color={"#BB0C0F"} />
+                ) : (
+                  "Delete my account"
+                )}
+              </button>
+            </Link>
           </div>
-        </div>
-        <div className="gap-3 p-2 flex flex-wrap justify-center items-center flex-row">
-          <button
-            className="transition-all hover:bg-very-caution items-center justify-center flex bg-caution p-2 rounded-lg px-4 text-white flex-1"
-            onClick={async () => {
-              await DeleteMessage({
-                messageId: messageData._id,
-                userToChatId: messageData.receiverId,
-              });
-              CloseDeleteMessagePopover();
-            }}
-          >
-            {isDeleting ? <SendLoader color="#E25E60" /> : "Delete"}
-          </button>
-          <button
-            className="transition-all hover:bg-very-caution bg-caution p-2 items-center justify-center flex rounded-lg px-4 text-white flex-1"
-            onClick={CloseDeleteMessagePopover}
-          >
-            Cancel
-          </button>
-        </div>
+        ) : (
+          <div className="gap-3 p-2 flex flex-wrap justify-center items-center flex-row">
+            <input
+              type="text"
+              className="w-full flex-1 ring-0 input border-2 bg-transparent rounded-lg focus:outline-none transition-all"
+              placeholder="Enter your password..."
+              value={Password}
+              onChange={(e) => setPassword(e.target.value)}
+              onPaste={(e) => {
+                e.preventDefault();
+                ErrorToast("You cannot paste text in this input.");
+              }}
+            />
+            <button
+              onClick={async () => {
+                await DeleteAccount(authUser.user._id, {
+                  email: authUser.user.email,
+                  password: Password,
+                });
+                CloseDeletePopover();
+                setPassword("");
+              }}
+              className="transition-all hover:bg-caution bg-very-caution p-2 rounded-lg px-4 text-white"
+            >
+              {isDeleting ? <SendLoader color={"#BB0C0F"} /> : "Delete"}
+            </button>
+          </div>
+        )}
       </motion.div>
     </motion.div>
   );

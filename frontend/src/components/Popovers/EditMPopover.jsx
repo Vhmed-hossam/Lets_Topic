@@ -6,7 +6,7 @@ import getContrastingTextColor from "../../helpers/GetContrast";
 import SendLoader from "../Spinner/SendLoader";
 import { useEffect, useState } from "react";
 import { useChatStore } from "../../store/useChatStore";
-export default function EditPopover({ messageData }) {
+export default function EditMessagePopover({ messageData }) {
   const { theme, myMessageTheme } = useSettingStore();
   const [NewText, setNewText] = useState("");
   const { CloseEditMessagePopover } = usePopoversStore();

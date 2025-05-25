@@ -1,17 +1,17 @@
 import { create } from "zustand";
 
 export const usePopoversStore = create((set) => ({
-  LogoutPopoverState: false,
-  UsernamePopoverState: false,
-  DisablePopoverState: false,
-  DeletePopoverState: false,
-  RestorePopoverState: false,
-  ReportPopoverState: false,
-  UnfriendPopoverState: false,
-  WipePopoverState: false,
   BlockPopoverState: false,
+  DeletePopoverState: false,
+  DisablePopoverState: false,
   EditMessagePopoverState: false,
+  LogoutPopoverState: false,
+  ReportPopoverState: false,
+  RestorePopoverState: false,
+  UnfriendPopoverState: false,
+  UsernamePopoverState: false,
   DeleteMessagePopoverState: false,
+  WipePopoverState: false,
 
   OpenLogoutPopover: () => set({ LogoutPopoverState: true }),
   CloseLogoutPopover: () => set({ LogoutPopoverState: false }),
