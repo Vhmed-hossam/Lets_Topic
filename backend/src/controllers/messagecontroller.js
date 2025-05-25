@@ -3,6 +3,7 @@ import cloudinary from "../lib/cloudinary.js";
 import User from "../models/userModel.js";
 import { GetRecieverSocketId, io } from "../lib/socket.js";
 import { emitUnreadUpdateLogic } from "../tasks/emitUnreadUpdate.js";
+import mongoose from "mongoose";
 
 export const getUsersForSidebar = async (req, res) => {
   try {
@@ -169,29 +170,60 @@ export const SendMessage = async (req, res) => {
 
 export const DeleteMessage = async (req, res) => {
   const { id: messageId } = req.params;
-  if (!messageId) {
-    return res.status(400).json({ error: "Message id is required" });
+  const { userToChatId } = req.body;
+  const myId = req.user._id;
+
+  if (!messageId || !userToChatId) {
+    return res.status(400).json({
+      error: "Message ID and recipient ID are required",
+    });
   }
+
+  if (!mongoose.Types.ObjectId.isValid(messageId)) {
+    return res.status(400).json({ error: "Invalid message ID format" });
+  }
+
   try {
-    const deletedMessage = await Message.findByIdAndDelete(messageId);
-    if (!deletedMessage) {
+    const message = await Message.findById(messageId);
+
+    if (!message) {
       return res.status(404).json({ error: "Message not found" });
     }
 
-    if (deletedMessage.voiceUrl) {
-      const publicId = deletedMessage.voiceUrl
-        .split("/")
-        .slice(-1)[0]
-        .split(".")[0];
-      await cloudinary.uploader.destroy(`voice-messages/${publicId}`, {
-        resource_type: "video",
+    if (message.senderId.toString() !== myId.toString()) {
+      return res.status(403).json({
+        error: "Unauthorized: You can only delete your own messages",
       });
     }
 
-    res.status(200).json({ message: "Message deleted successfully" });
+    const deletedMessage = await Message.findByIdAndDelete(messageId);
+
+    if (!deletedMessage) {
+      return res.status(404).json({ error: "Failed to delete message" });
+    }
+
+    const messages = await Message.find({
+      $or: [
+        { senderId: myId, receiverId: userToChatId },
+        { senderId: userToChatId, receiverId: myId },
+      ],
+    })
+      .sort({ createdAt: 1 })
+      .lean();
+
+    return res.status(200).json({
+      message: "Message deleted successfully",
+      messages,
+    });
   } catch (error) {
+    if (error.name === "CastError") {
+      return res.status(400).json({ error: "Invalid message ID format" });
+    }
+
     console.error("DeleteMessage error:", error);
-    res.status(500).json({ error: "Internal Server Error" });
+    return res.status(500).json({
+      error: "Internal Server Error",
+    });
   }
 };
 
