@@ -173,9 +173,15 @@ export const DeleteMessage = async (req, res) => {
   const { userToChatId } = req.body;
   const myId = req.user._id;
 
-  if (!messageId || !userToChatId) {
+  if (!messageId) {
     return res.status(400).json({
-      error: "Message ID and recipient ID are required",
+      error: "Message ID is required",
+    });
+  }
+
+  if (!userToChatId) {
+    return res.status(400).json({
+      error: "User to chat ID is required",
     });
   }
 
