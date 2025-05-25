@@ -132,7 +132,7 @@ export const useChatStore = create((set, get) => ({
       return;
     }
     if (!socket.connected) {
-      console.warn("Socket not connected");
+      console.warn("Server not connected");
       return;
     }
     if (!authUser?.user?._id) {
@@ -241,7 +241,6 @@ export const useChatStore = create((set, get) => ({
       if (SelectedUser?._id === userId) {
         set({ Messages: [] });
       }
-      get().fetchPendingWipeRequests();
     });
   },
 

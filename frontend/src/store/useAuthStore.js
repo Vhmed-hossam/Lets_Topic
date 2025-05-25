@@ -78,7 +78,7 @@ export const useAuthStore = create((set, get) => ({
       return;
     }
     if (socket) {
-      console.log("Socket connected");
+      console.log("Server connected");
     }
 
     const newSocket = io(BASE_URL, {
@@ -168,6 +168,7 @@ export const useAuthStore = create((set, get) => ({
         set({ authUser: null });
       }
       set({ authUser: res.data });
+      console.log(res.data);
       SuccesToast(res.data.message);
       await get().connectSocket();
       return { success: true, data: res.data };
