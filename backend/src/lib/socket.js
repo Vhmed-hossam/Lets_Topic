@@ -1,7 +1,6 @@
 import { Server } from "socket.io";
 import http from "http";
 import express from "express";
-import { BaseUrl } from "../index.js";
 
 const app = express();
 const server = http.createServer(app);
@@ -26,9 +25,7 @@ io.on("connection", (socket) => {
   const userId = socket.handshake.auth.userId;
 
   if (!userId || userId === "undefined") {
-    console.error("Invalid or missing userId for socket:", socket.id, {
-      userId,
-    });
+    console.error("Invalid or missing userId for socket:", socket.id, { userId });
     socket.disconnect(true);
     return;
   }
@@ -52,15 +49,42 @@ io.on("connection", (socket) => {
       console.error("Invalid newMessage data:", message);
       return;
     }
-    socket.to(`user:${message.receiverId}`).emit("newMessage", {
+    const room = [message.senderId, message.receiverId].sort().join("-");
+    socket.to(room).emit("newMessage", {
       ...message,
-      isRead: message.senderId === userId,
+      isRead: false,
     });
-
     socket.to(`user:${message.senderId}`).emit("newMessage", {
       ...message,
       isRead: true,
     });
+  });
+
+  socket.on("editMessage", ({ messageId, newText, senderId, receiverId }) => {
+    if (!messageId || !newText || !senderId || !receiverId) {
+      console.error("Invalid editMessage data:", { messageId, newText, senderId, receiverId });
+      return;
+    }
+    const room = [senderId, receiverId].sort().join("-");
+    const payload = {
+      messageId,
+      text: newText,
+      edited: true,
+      senderId,
+      receiverId,
+      updatedAt: new Date().toISOString(),
+    };
+    io.to(room).emit("messageEdited", payload);
+  });
+
+  socket.on("deleteMessage", ({ messageId, senderId, receiverId }) => {
+    if (!messageId || !senderId || !receiverId) {
+      console.error("Invalid deleteMessage data:", { messageId, senderId, receiverId });
+      return;
+    }
+    const room = [senderId, receiverId].sort().join("-");
+    const payload = { messageId, senderId, receiverId };
+    io.to(room).emit("messageDeleted", payload);
   });
 
   socket.on("typing", ({ senderId, receiverId }) => {
@@ -88,4 +112,5 @@ io.on("connection", (socket) => {
     }
   });
 });
+
 export { io, server, app };

@@ -54,7 +54,6 @@ export const useChatStore = create((set, get) => ({
       }
       const res = await axiosInstance.get(`/messages/${UId}`);
       const Messages = res.data.messages || [];
-
       set({ Messages });
     } catch (error) {
       console.error(
@@ -117,7 +116,7 @@ export const useChatStore = create((set, get) => ({
       const unreadCount =
         useNotificationStore.getState().unreadMessages[SelectedUser._id] || 0;
       if (unreadCount > 0) {
-        await get().markMessagesAsRead(SelectedUser._id, "SendMessage");
+        await get().markMessagesAsRead(SelectedUser._id);
       }
       useNotificationStore.getState().resetUnread(SelectedUser._id);
     }
@@ -133,6 +132,7 @@ export const useChatStore = create((set, get) => ({
       return;
     }
     if (!socket.connected) {
+      console.warn("Socket not connected");
       return;
     }
     if (!authUser?.user?._id) {
@@ -140,7 +140,6 @@ export const useChatStore = create((set, get) => ({
       return;
     }
     socket.emit("joinUserRoom", { userId: authUser.user._id });
-
     if (SelectedUser?._id) {
       socket.emit("joinChat", {
         senderId: authUser.user._id,
@@ -166,13 +165,44 @@ export const useChatStore = create((set, get) => ({
             playSound(
               `/Sounds/${useSettingStore.getState().myReceiveSound}.mp3`
             );
-            get().markMessagesAsRead(newMessage.senderId, "newMessage");
+            get().markMessagesAsRead(newMessage.senderId);
             useNotificationStore.getState().resetUnread(newMessage.senderId);
           }
           return { Messages: [...state.Messages, newMessage] };
         }
-
         return state;
+      });
+    });
+
+    socket.off("messageEdited").on("messageEdited", ({ messageId, text, edited, senderId, receiverId, updatedAt }) => {
+      set((state) => {
+        const isCurrentChat =
+          state.SelectedUser?._id === senderId ||
+          state.SelectedUser?._id === receiverId;
+        if (!isCurrentChat) {
+          return state;
+        }
+        const updatedMessages = state.Messages.map((msg) =>
+          msg._id === messageId
+            ? { ...msg, text, edited, updatedAt }
+            : msg
+        );
+        return { Messages: updatedMessages };
+      });
+    });
+
+    socket.off("messageDeleted").on("messageDeleted", ({ messageId, senderId, receiverId }) => {
+      set((state) => {
+        const isCurrentChat =
+          state.SelectedUser?._id === senderId ||
+          state.SelectedUser?._id === receiverId;
+        if (!isCurrentChat) {
+          return state;
+        }
+        const updatedMessages = state.Messages.filter(
+          (msg) => msg._id !== messageId
+        );
+        return { Messages: updatedMessages };
       });
     });
 
@@ -221,7 +251,10 @@ export const useChatStore = create((set, get) => ({
       console.warn("Cannot unsubscribe: No socket");
       return;
     }
+    console.log("Unsubscribing from socket events");
     socket.off("newMessage");
+    socket.off("messageEdited");
+    socket.off("messageDeleted");
     socket.off("userTyping");
     socket.off("userStoppedTyping");
     socket.off("friendRequestAccepted");
@@ -259,6 +292,13 @@ export const useChatStore = create((set, get) => ({
       typingUserId: null,
       Messages: [],
     });
+    const socket = useAuthStore.getState().socket;
+    if (socket && socket.connected) {
+      socket.emit("joinChat", {
+        senderId: authUser._id,
+        receiverId: userObj._id,
+      });
+    }
     const unreadCount =
       useNotificationStore.getState().unreadMessages[userObj._id] || 0;
     if (unreadCount > 0 && userObj._id !== currentLastMarkedUserId) {
@@ -268,7 +308,7 @@ export const useChatStore = create((set, get) => ({
         );
         const backendUnreadCount = res.data.unreadMessages[userObj._id] || 0;
         if (backendUnreadCount > 0) {
-          await get().markMessagesAsRead(userObj._id, "SetSelectedUser");
+          await get().markMessagesAsRead(userObj._id);
           set({ lastMarkedUserId: userObj._id });
         } else {
           useNotificationStore.getState().resetUnread(userObj._id);
@@ -280,6 +320,7 @@ export const useChatStore = create((set, get) => ({
         );
       }
     }
+    get().GetMessages(userObj._id);
   },
 
   resetTypingIndicator: () => {
@@ -373,8 +414,18 @@ export const useChatStore = create((set, get) => ({
   },
   EditMessage: async (data) => {
     const { messageId, Text, userToChatId } = data;
+    const authUser = useAuthStore.getState().authUser?.user;
+    const socket = useAuthStore.getState().socket;
     set({ isEditing: true });
     try {
+      
+      set((state) => ({
+        Messages: state.Messages.map((msg) =>
+          msg._id === messageId
+            ? { ...msg, text: Text.trim(), edited: true, updatedAt: new Date().toISOString() }
+            : msg
+        ),
+      }));
       const res = await axiosInstance.put(
         `/messages/update-message/${messageId}`,
         {
@@ -382,11 +433,30 @@ export const useChatStore = create((set, get) => ({
           userToChatId,
         }
       );
+      
       set({ Messages: res.data.messages || [] });
       SuccesToast(res.data.message || "Message edited successfully");
+      if (socket && socket.connected) {
+        socket.emit("editMessage", {
+          messageId,
+          newText: Text.trim(),
+          senderId: authUser._id,
+          receiverId: userToChatId,
+        });
+      } else {
+        console.warn("Socket not connected, editMessage not emitted");
+      }
     } catch (error) {
       console.error("EditMessage error:", error);
-      ErrorToast(error.response?.data?.error);
+      
+      set((state) => ({
+        Messages: state.Messages.map((msg) =>
+          msg._id === messageId
+            ? { ...msg, text: msg.text, edited: false }
+            : msg
+        ),
+      }));
+      ErrorToast(error.response?.data?.error || "Failed to edit message");
     } finally {
       set({ isEditing: false });
     }
@@ -394,19 +464,36 @@ export const useChatStore = create((set, get) => ({
 
   DeleteMessage: async (data) => {
     const { messageId, userToChatId } = data;
+    const authUser = useAuthStore.getState().authUser?.user;
+    const socket = useAuthStore.getState().socket;
     set({ isDeleting: true });
     try {
+      
+      set((state) => ({
+        Messages: state.Messages.filter((msg) => msg._id !== messageId),
+      }));
       const res = await axiosInstance.delete(
         `/messages/delete-message/${messageId}`,
         {
           data: { userToChatId },
         }
       );
-      console.log(res.data);
+      
       set({ Messages: res.data.messages || [] });
       SuccesToast(res.data.message || "Message deleted successfully");
+      if (socket && socket.connected) {
+        socket.emit("deleteMessage", {
+          messageId,
+          senderId: authUser._id,
+          receiverId: userToChatId,
+        });
+      } else {
+        console.warn("Socket not connected, deleteMessage not emitted");
+      }
     } catch (error) {
       console.error("DeleteMessage error:", error);
+      
+      await get().GetMessages(userToChatId);
       ErrorToast(error.response?.data?.error || "Failed to delete message");
     } finally {
       set({ isDeleting: false });
