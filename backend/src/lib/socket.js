@@ -12,15 +12,22 @@ const io = new Server(server, {
   },
 });
 
+const userSocketMap = new Map();
+
 export function GetRecieverSocketId(userId) {
-  const socketId = userSocketMap[userId];
-  if (!socketId) {
-    console.warn(`GetRecieverSocketId: No socket found for user: ${userId}`);
+  const socketIds = userSocketMap.get(userId);
+  if (!socketIds || socketIds.size === 0) {
+    console.warn(`GetReceiverSocketId: No socket found for user: ${userId}`);
+    return null;
   }
-  return socketId;
+  return socketIds.values().next().value;
 }
 
-const userSocketMap = {};
+function broadcastOnlineUsers() {
+  const onlineUsers = Array.from(userSocketMap.keys());
+  io.emit("getOnlineUsers", onlineUsers);
+}
+
 io.on("connection", (socket) => {
   const userId = socket.handshake.auth.userId;
 
@@ -29,11 +36,12 @@ io.on("connection", (socket) => {
     socket.disconnect(true);
     return;
   }
-
-  userSocketMap[userId] = socket.id;
+  if (!userSocketMap.has(userId)) {
+    userSocketMap.set(userId, new Set());
+  }
+  userSocketMap.get(userId).add(socket.id);
   socket.join(`user:${userId}`);
-
-  io.emit("getOnlineUsers", Object.keys(userSocketMap));
+  broadcastOnlineUsers();
 
   socket.on("joinChat", ({ senderId, receiverId }) => {
     if (!senderId || !receiverId) {
@@ -107,8 +115,14 @@ io.on("connection", (socket) => {
 
   socket.on("disconnect", () => {
     if (userId) {
-      delete userSocketMap[userId];
-      io.emit("getOnlineUsers", Object.keys(userSocketMap));
+      const socketSet = userSocketMap.get(userId);
+      if (socketSet) {
+        socketSet.delete(socket.id);
+        if (socketSet.size === 0) {
+          userSocketMap.delete(userId);
+        }
+      }
+      broadcastOnlineUsers();
     }
   });
 });
