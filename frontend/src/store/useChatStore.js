@@ -174,37 +174,42 @@ export const useChatStore = create((set, get) => ({
       });
     });
 
-    socket.off("messageEdited").on("messageEdited", ({ messageId, text, edited, senderId, receiverId, updatedAt }) => {
-      set((state) => {
-        const isCurrentChat =
-          state.SelectedUser?._id === senderId ||
-          state.SelectedUser?._id === receiverId;
-        if (!isCurrentChat) {
-          return state;
+    socket
+      .off("messageEdited")
+      .on(
+        "messageEdited",
+        ({ messageId, text, edited, senderId, receiverId, updatedAt }) => {
+          set((state) => {
+            const isCurrentChat =
+              state.SelectedUser?._id === senderId ||
+              state.SelectedUser?._id === receiverId;
+            if (!isCurrentChat) {
+              return state;
+            }
+            const updatedMessages = state.Messages.map((msg) =>
+              msg._id === messageId ? { ...msg, text, edited, updatedAt } : msg
+            );
+            return { Messages: updatedMessages };
+          });
         }
-        const updatedMessages = state.Messages.map((msg) =>
-          msg._id === messageId
-            ? { ...msg, text, edited, updatedAt }
-            : msg
-        );
-        return { Messages: updatedMessages };
-      });
-    });
+      );
 
-    socket.off("messageDeleted").on("messageDeleted", ({ messageId, senderId, receiverId }) => {
-      set((state) => {
-        const isCurrentChat =
-          state.SelectedUser?._id === senderId ||
-          state.SelectedUser?._id === receiverId;
-        if (!isCurrentChat) {
-          return state;
-        }
-        const updatedMessages = state.Messages.filter(
-          (msg) => msg._id !== messageId
-        );
-        return { Messages: updatedMessages };
+    socket
+      .off("messageDeleted")
+      .on("messageDeleted", ({ messageId, senderId, receiverId }) => {
+        set((state) => {
+          const isCurrentChat =
+            state.SelectedUser?._id === senderId ||
+            state.SelectedUser?._id === receiverId;
+          if (!isCurrentChat) {
+            return state;
+          }
+          const updatedMessages = state.Messages.filter(
+            (msg) => msg._id !== messageId
+          );
+          return { Messages: updatedMessages };
+        });
       });
-    });
 
     socket.off("userTyping").on("userTyping", ({ senderId }) => {
       set((state) => {
@@ -417,11 +422,15 @@ export const useChatStore = create((set, get) => ({
     const socket = useAuthStore.getState().socket;
     set({ isEditing: true });
     try {
-      
       set((state) => ({
         Messages: state.Messages.map((msg) =>
           msg._id === messageId
-            ? { ...msg, text: Text.trim(), edited: true, updatedAt: new Date().toISOString() }
+            ? {
+                ...msg,
+                text: Text.trim(),
+                edited: true,
+                updatedAt: new Date().toISOString(),
+              }
             : msg
         ),
       }));
@@ -432,7 +441,7 @@ export const useChatStore = create((set, get) => ({
           userToChatId,
         }
       );
-      
+
       set({ Messages: res.data.messages || [] });
       SuccesToast(res.data.message || "Message edited successfully");
       if (socket && socket.connected) {
@@ -447,7 +456,7 @@ export const useChatStore = create((set, get) => ({
       }
     } catch (error) {
       console.error("EditMessage error:", error);
-      
+
       set((state) => ({
         Messages: state.Messages.map((msg) =>
           msg._id === messageId
@@ -467,7 +476,6 @@ export const useChatStore = create((set, get) => ({
     const socket = useAuthStore.getState().socket;
     set({ isDeleting: true });
     try {
-      
       set((state) => ({
         Messages: state.Messages.filter((msg) => msg._id !== messageId),
       }));
@@ -477,7 +485,7 @@ export const useChatStore = create((set, get) => ({
           data: { userToChatId },
         }
       );
-      
+
       set({ Messages: res.data.messages || [] });
       SuccesToast(res.data.message || "Message deleted successfully");
       if (socket && socket.connected) {
@@ -491,7 +499,7 @@ export const useChatStore = create((set, get) => ({
       }
     } catch (error) {
       console.error("DeleteMessage error:", error);
-      
+
       await get().GetMessages(userToChatId);
       ErrorToast(error.response?.data?.error || "Failed to delete message");
     } finally {
