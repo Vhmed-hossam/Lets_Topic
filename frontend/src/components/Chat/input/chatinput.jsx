@@ -3,6 +3,7 @@ import SendLoader from "../../Spinner/SendLoader";
 import MinimalAudioPlayer from "../../CustomAudioPlayer/CustomAudioPlayer";
 import { useTextColor } from "../../../helpers/Colors";
 import useChatinputLogic from "../../../Funcs/ChatInputFunc";
+import onEscapeKeyPress from "../../../Events/onEscapeKeyPress";
 export default function Chatinput() {
   const textColor = useTextColor();
    const {
@@ -10,7 +11,6 @@ export default function Chatinput() {
     setText,
     fileInput,
     textareaRef,
-    textAreaHandlers,
     isSending,
     handleSend,
     mediaPreview,
@@ -23,12 +23,12 @@ export default function Chatinput() {
     stopRecording,
     isRecording,
     audioUrl,
-    audioBlob,
     sendVoiceMessage,
     setAudioBlob,
     setAudioUrl,
     myMessageTheme,
   } = useChatinputLogic();
+    onEscapeKeyPress();
   return (
     <div className="p-2 w-full">
       {mediaPreview && (

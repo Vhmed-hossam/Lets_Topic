@@ -2,9 +2,7 @@ import { useRef, useState, useEffect } from "react";
 import { useChatStore } from "../store/useChatStore";
 import { useSettingStore } from "../store/useSettingsStore";
 import { useAuthStore } from "../store/useAuthStore";
-import onEscapeKeyPress from "../Events/onEscapeKeyPress";
 import { ErrorToast } from "../components/Toast/Toasters";
-
 export default function useChatinputLogic() {
   const [text, setText] = useState("");
   const [mediaPreview, setMediaPreview] = useState(null);
@@ -21,12 +19,10 @@ export default function useChatinputLogic() {
     useChatStore();
   const { authUser } = useAuthStore();
   const { myMessageTheme } = useSettingStore();
-
   const fileInput = useRef(null);
   const textareaRef = useRef(null);
   const mediaRecorderRef = useRef(null);
   const chunks = useRef([]);
-
   const blobToBase64 = (blob) =>
     new Promise((resolve, reject) => {
       const reader = new FileReader();
@@ -34,7 +30,6 @@ export default function useChatinputLogic() {
       reader.onerror = reject;
       reader.readAsDataURL(blob);
     });
-
   const handleSend = async (e) => {
     e.preventDefault();
     if (!text.trim() && !imageBase64 && !videoBase64) {
@@ -196,14 +191,11 @@ export default function useChatinputLogic() {
     adjustTextareaHeight();
   }, [text]);
 
-  onEscapeKeyPress();
-
   return {
     text,
     setText,
     fileInput,
     textareaRef,
-    textAreaHandlers: { adjustTextareaHeight },
     isSending,
     handleSend,
     mediaPreview,
@@ -216,7 +208,6 @@ export default function useChatinputLogic() {
     stopRecording,
     isRecording,
     audioUrl,
-    audioBlob,
     sendVoiceMessage,
     setAudioBlob,
     setAudioUrl,
