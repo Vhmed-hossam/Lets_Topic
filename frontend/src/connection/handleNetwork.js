@@ -1,10 +1,16 @@
 import { useEffect, useState } from "react";
+import { SuccesToast } from "../components/Toast/Toasters";
+
 export default function useNetworkStatus() {
   const [isOnline, setIsOnline] = useState(navigator.onLine);
 
   useEffect(() => {
     const updateNetwork = () => {
-      setIsOnline(navigator.onLine);
+      const online = navigator.onLine;
+      setIsOnline(online);
+      if (online) {
+        SuccesToast("You are online , please refresh the page");
+      }
     };
 
     window.addEventListener("online", updateNetwork);
