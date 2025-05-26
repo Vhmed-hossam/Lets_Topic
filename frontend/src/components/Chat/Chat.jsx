@@ -80,16 +80,14 @@ export default function Chat() {
   }
   return (
     <>
-      {EditMessagePopoverState && (
-        <AnimatePresence>
-          <EditMessagePopover messageData={Data} />
-        </AnimatePresence>
-      )}
-      {DeleteMessagePopoverState && (
-        <AnimatePresence>
+      <AnimatePresence>
+        {EditMessagePopoverState && <EditMessagePopover messageData={Data} />}{" "}
+      </AnimatePresence>
+      <AnimatePresence>
+        {DeleteMessagePopoverState && (
           <DeletePopover messageData={MessageDeletionData} />
-        </AnimatePresence>
-      )}
+        )}{" "}
+      </AnimatePresence>
       <div
         className="flex flex-1 self-stretch flex-col overflow-auto "
         ref={scrollRef}
