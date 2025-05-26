@@ -80,6 +80,7 @@ export default function useChatinputLogic() {
       } else if (file.type.startsWith("video/")) {
         if (file.size > 20 * 1024 * 1024) {
           ErrorToast("Video size exceeds 20MB limit.");
+          removeMedia();
           return;
         }
         setMediaType("video");
@@ -212,5 +213,9 @@ export default function useChatinputLogic() {
     setAudioBlob,
     setAudioUrl,
     myMessageTheme,
+    setVideoBase64,
+    setImageBase64,
+    setMediaType,
+    setMediaPreview,
   };
 }

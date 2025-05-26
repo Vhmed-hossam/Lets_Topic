@@ -52,12 +52,6 @@ export default function EditMessagePopover({ messageData }) {
               color: getContrastingTextColor(myMessageTheme),
             }}
           >
-            {messageData?.image && (
-              <img
-                src={messageData.image}
-                className="w-full max-w-[300px] rounded-md mb-2 "
-              />
-            )}
             {messageData?.text}
           </div>
         </div>

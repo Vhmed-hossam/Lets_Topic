@@ -6,7 +6,7 @@ import useChatinputLogic from "../../../Funcs/ChatInputFunc";
 import onEscapeKeyPress from "../../../Events/onEscapeKeyPress";
 export default function Chatinput() {
   const textColor = useTextColor();
-   const {
+  const {
     text,
     setText,
     fileInput,
@@ -27,8 +27,12 @@ export default function Chatinput() {
     setAudioBlob,
     setAudioUrl,
     myMessageTheme,
+    setVideoBase64,
+    setImageBase64,
+    setMediaType,
+    setMediaPreview,
   } = useChatinputLogic();
-    onEscapeKeyPress();
+  onEscapeKeyPress();
   return (
     <div className="p-2 w-full">
       {mediaPreview && (
@@ -108,7 +112,7 @@ export default function Chatinput() {
               className="btn bg-transparent p-2 border-0 ring-0 text-zinc-500"
               onClick={() => {
                 isRecording ? stopRecording() : startRecording();
-                setMediaPreview(null);
+                null;
                 setMediaType(null);
                 setImageBase64(null);
                 setVideoBase64(null);
