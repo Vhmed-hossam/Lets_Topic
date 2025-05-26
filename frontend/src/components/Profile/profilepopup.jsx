@@ -13,35 +13,29 @@ import { motion, AnimatePresence } from "framer-motion";
 import getContrastingTextColor from "../../helpers/GetContrast";
 import { defaultImage } from "../../Data/Avatars";
 import formatDateOnly from "../../helpers/formatDateonly";
-import { useFriendsStore } from "../../store/useFriendsStore";
 import { useState } from "react";
 import renderTextWithLinks from "../../helpers/renderTLink";
 import SigninLoader from "../Spinner/signinloader";
 import { useAuthStore } from "../../store/useAuthStore";
+import { usePopoversStore } from "../../store/usePopoversStore";
+import BlockPopover from "../Popovers/BlockPopover";
+import WipeChatPopover from "../Popovers/WipeChatPopover";
+import UnfriendPopover from "../Popovers/UnfriendPopover";
+import ReportPopover from "../Popovers/ReportPopover";
 
 export default function ProfileComp() {
-  const [BlockPopover, setBlockPopover] = useState(false);
-  const [WipePopover, setWipePopover] = useState(false);
-  const [UnfriendPopover, setUnfriendPopover] = useState(false);
-  const [ReportPopover, setReportPopover] = useState(false);
-  const [ReportReason, setReportReason] = useState("")
-  const { authUser, isReportingUser, ReportUser } = useAuthStore();
+  const { SelectedUser, ProfileOpened, closeProfile, ChatMedia, OpenMedia } =
+    useChatStore();
   const {
-    SelectedUser,
-    ProfileOpened,
-    closeProfile,
-    ChatMedia,
-    OpenMedia,
-    SetSelectedUser,
-  } = useChatStore();
-  const {
-    unfriendUser,
-    blockUser,
-    WipechatRequest,
-    isBlocking,
-    isWiping,
-    isUnfriending,
-  } = useFriendsStore();
+    BlockPopoverState,
+    OpenBlockPopover,
+    WipePopoverState,
+    OpenWipePopover,
+    UnfriendPopoverState,
+    OpenUnfriendPopover,
+    ReportPopoverState,
+    OpenReportPopover,
+  } = usePopoversStore();
   const { theme, myMessageTheme } = useSettingStore();
   const backgroundColor = theme === "dark" ? "#0A0A17" : "#EFEFFC";
   const textColor = getContrastingTextColor(backgroundColor);
@@ -50,221 +44,15 @@ export default function ProfileComp() {
   const placeholderBgColor = theme === "dark" ? "#333333" : "#D1D1D1";
   return (
     <>
+      <AnimatePresence>{BlockPopoverState && <BlockPopover />}</AnimatePresence>
       <AnimatePresence>
-        {BlockPopover && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black-full/40 flex items-center justify-center z-50"
-          >
-            <motion.div
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.9 }}
-              transition={{ duration: 0.2 }}
-              className={`flex border border-very-caution flex-col gap-5 overflow-hidden rounded-lg shadow-lg w-11/12 max-w-md p-4 relative ${
-                theme === "dark" ? "bg-black-full" : "bg-white"
-              }`}
-            >
-              <div className="flex flex-col items-center gap-2">
-                <TriangleAlert className="size-20 text-very-caution" />
-                <h2
-                  className={`text-xl font-bold text-center ${
-                    theme === "dark" ? "text-white" : "text-black-full"
-                  }`}
-                >
-                  Are you sure you want to Block {SelectedUser.fullName}?
-                </h2>
-              </div>
-              <div className="gap-5  p-2 flex flex-wrap justify-center items-center flex-row">
-                <button
-                  className="transition-all hover:opacity-80 flex-1 p-2 rounded-lg px-4 text-white"
-                  style={{ backgroundColor: myMessageTheme }}
-                  onClick={async () => {
-                    await blockUser({
-                      userId: authUser.user._id,
-                      blockUserId: SelectedUser._id,
-                    });
-                    setBlockPopover(false);
-                    SetSelectedUser(null);
-                  }}
-                >
-                  {isBlocking ? <SigninLoader /> : "Block"}
-                </button>
-                <button
-                  onClick={() => setBlockPopover(false)}
-                  className="bg-very-caution flex-1 hover:bg-caution transition-all p-2 rounded-lg px-4 text-white"
-                >
-                  Cancel
-                </button>
-              </div>
-            </motion.div>
-          </motion.div>
-        )}
+        {WipePopoverState && <WipeChatPopover />}
       </AnimatePresence>
       <AnimatePresence>
-        {WipePopover && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black-full/40 flex items-center justify-center z-50"
-          >
-            <motion.div
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.9 }}
-              transition={{ duration: 0.2 }}
-              className={`flex border border-very-caution flex-col gap-5 overflow-hidden rounded-lg shadow-lg w-11/12 max-w-md p-4 relative ${
-                theme === "dark" ? "bg-black-full" : "bg-white"
-              }`}
-            >
-              <div className="flex flex-col items-center gap-2">
-                <TriangleAlert className="size-20 text-very-caution" />
-                <h2
-                  className={`text-xl font-bold text-center ${
-                    theme === "dark" ? "text-white" : "text-black-full"
-                  }`}
-                >
-                  Are you sure you want to Wipe chat with{" "}
-                  {SelectedUser.fullName}?
-                </h2>
-              </div>
-              <div className="gap-5  p-2 flex flex-wrap justify-center items-center flex-row">
-                <button
-                  className="transition-all hover:opacity-80 flex-1 p-2 rounded-lg px-4 text-white"
-                  style={{ backgroundColor: myMessageTheme }}
-                  onClick={async () => {
-                    await WipechatRequest(SelectedUser._id);
-                    setWipePopover(false);
-                    SetSelectedUser(null);
-                  }}
-                >
-                  {isWiping ? <SigninLoader /> : "Wipe"}
-                </button>
-                <button
-                  onClick={() => setWipePopover(false)}
-                  className="bg-very-caution flex-1 hover:bg-caution transition-all p-2 rounded-lg px-4 text-white"
-                >
-                  Cancel
-                </button>
-              </div>
-            </motion.div>
-          </motion.div>
-        )}
+        {UnfriendPopoverState && <UnfriendPopover />}
       </AnimatePresence>
       <AnimatePresence>
-        {UnfriendPopover && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black-full/40 flex items-center justify-center z-50"
-          >
-            <motion.div
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.9 }}
-              transition={{ duration: 0.2 }}
-              className={`flex border border-very-caution flex-col gap-5 overflow-hidden rounded-lg shadow-lg w-11/12 max-w-md p-4 relative ${
-                theme === "dark" ? "bg-black-full" : "bg-white"
-              }`}
-            >
-              <div className="flex flex-col items-center gap-2">
-                <TriangleAlert className="size-20 text-very-caution" />
-                <h2
-                  className={`text-xl font-bold text-center ${
-                    theme === "dark" ? "text-white" : "text-black-full"
-                  }`}
-                >
-                  Are you sure you want to Unfriend {SelectedUser.fullName}?
-                </h2>
-              </div>
-              <div className="gap-5  p-2 flex flex-wrap justify-center items-center flex-row">
-                <button
-                  className="transition-all hover:opacity-80 flex-1 p-2 rounded-lg px-4 text-white"
-                  style={{ backgroundColor: myMessageTheme }}
-                  onClick={async () => {
-                    await unfriendUser({
-                      userId: authUser.user._id,
-                      friendId: SelectedUser._id,
-                    });
-                    setUnfriendPopover(false);
-                    SetSelectedUser(null);
-                  }}
-                >
-                  {isUnfriending ? <SigninLoader /> : "Unfriend"}
-                </button>
-                <button
-                  onClick={() => setUnfriendPopover(false)}
-                  className="bg-very-caution flex-1 hover:bg-caution transition-all p-2 rounded-lg px-4 text-white"
-                >
-                  Cancel
-                </button>
-              </div>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-      <AnimatePresence>
-        {ReportPopover && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black-full/40 flex items-center justify-center z-50"
-          >
-            <motion.div
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.9 }}
-              transition={{ duration: 0.2 }}
-              className={`flex border-very-caution border-3 flex-col gap-5 overflow-hidden rounded-lg shadow-lg w-11/12 max-w-md p-4 relative ${
-                theme === "dark" ? "bg-black-full" : "bg-white"
-              }`}
-            >
-              <div className="flex flex-col items-center gap-2">
-                <TriangleAlert className="size-20 text-very-caution" />
-                <h2
-                  className={`text-xl font-bold text-center ${
-                    theme === "dark" ? "text-white" : "text-black-full"
-                  }`}
-                >
-                  Reporting {SelectedUser.fullName}
-                </h2>
-              </div>
-              <div className="p-2 space-y-2">
-                <p>Please enter the reason for your report :</p>
-                <textarea
-                  className="resize-none w-full p-2 border border-very-caution ring-0 rounded-md"
-                  placeholder="Enter the reason"
-                  onChange={(e) => setReportReason(e.target.value)}
-                  value={ReportReason}
-                />
-              </div>
-              <div className="gap-5  p-2 flex flex-wrap justify-center items-center flex-row">
-                <button
-                  className="transition-all hover:opacity-80 flex-1 p-2 rounded-lg px-4 text-white"
-                  style={{ backgroundColor: myMessageTheme }}
-                  onClick={async () => {
-                    await ReportUser({});
-                    setReportPopover(false);
-                    SetSelectedUser(null);
-                  }}
-                >
-                  {isReportingUser ? <SigninLoader /> : "Report"}
-                </button>
-                <button
-                  onClick={() => setReportPopover(false)}
-                  className="bg-very-caution flex-1 hover:bg-caution transition-all p-2 rounded-lg px-4 text-white"
-                >
-                  Cancel
-                </button>
-              </div>
-            </motion.div>
-          </motion.div>
-        )}
+        {ReportPopoverState && <ReportPopover />}
       </AnimatePresence>
       <AnimatePresence>
         {ProfileOpened && (
@@ -411,34 +199,28 @@ export default function ProfileComp() {
               <div className="p-2 mt-2 text-caution gap-3 flex flex-col">
                 <div>
                   <div
-                    onClick={() => setUnfriendPopover(true)}
+                    onClick={OpenUnfriendPopover}
                     className="p-4 flex rounded-lg justify-start gap-2 items-center text-caution cursor-pointer hover:bg-opacity-10 transition-colors hover:bg-very-caution/20"
                   >
                     <UserX />
                     <h2>Unfriend {SelectedUser.fullName}</h2>
                   </div>
                   <div
-                    onClick={() => {
-                      setWipePopover(true);
-                    }}
+                    onClick={OpenWipePopover}
                     className="p-4 flex rounded-lg justify-start gap-2 items-center text-caution cursor-pointer hover:bg-opacity-10 transition-colors hover:bg-very-caution/20"
                   >
                     <Trash2 />
                     <h2>Wipe Chat</h2>
                   </div>
                   <div
-                    onClick={() => {
-                      setBlockPopover(true);
-                    }}
+                    onClick={OpenBlockPopover}
                     className="p-4 flex rounded-lg justify-start gap-2 items-center text-caution cursor-pointer hover:bg-opacity-10 transition-colors hover:bg-very-caution/20"
                   >
                     <Ban />
                     <h2>Block {SelectedUser.fullName}</h2>
                   </div>
                   <div
-                    onClick={() => {
-                      setReportPopover(true);
-                    }}
+                    onClick={OpenReportPopover}
                     className="p-4 flex rounded-lg justify-start gap-2 items-center text-caution cursor-pointer hover:bg-opacity-10 transition-colors hover:bg-very-caution/20"
                   >
                     <ThumbsDown />
