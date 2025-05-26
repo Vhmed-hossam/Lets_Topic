@@ -11,13 +11,14 @@ import formatDateOnly from "../../helpers/formatDateonly";
 import MinimalAudioPlayer from "../CustomAudioPlayer/CustomAudioPlayer";
 import { useFriendsStore } from "../../store/useFriendsStore";
 import CustomVideoPlayer from "../CustomVideoPlayer/CustomVideoPlayer";
-import { Pencil, Trash } from "lucide-react";
+import { Download, Pencil, Trash } from "lucide-react";
 import { defaultImage } from "../../Data/Avatars";
 import renderTextWithLinks from "../../helpers/renderTLink";
 import { AnimatePresence } from "framer-motion";
 import { usePopoversStore } from "../../store/usePopoversStore";
 import DeletePopover from "../Popovers/DeleteMPopover";
 import EditMessagePopover from "../Popovers/EditMPopover";
+import { downloadImage, downloadVideo } from "../../helpers/downloadImage";
 export default function Chat() {
   const [Data, setData] = useState(null);
   const [MessageDeletionData, setMessageDeletionData] = useState("");
@@ -218,6 +219,26 @@ export default function Chat() {
                                   className="cursor-pointer"
                                 >
                                   <Pencil size={20} />
+                                </button>
+                              )}
+                              {message?.image && (
+                                <button
+                                  onClick={async () => {
+                                    downloadImage(message.image);
+                                  }}
+                                  className="cursor-pointer"
+                                >
+                                  <Download size={20} />
+                                </button>
+                              )}
+                              {message?.videoUrl && (
+                                <button
+                                  onClick={async () => {
+                                    downloadVideo(message.videoUrl);
+                                  }}
+                                  className="cursor-pointer"
+                                >
+                                  <Download size={20} />
                                 </button>
                               )}
                             </div>
