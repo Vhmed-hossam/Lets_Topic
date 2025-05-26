@@ -202,6 +202,8 @@ export const useAuthStore = create((set, get) => ({
       Cookie.remove("my-sender-theme");
       Cookie.remove("my-message-theme");
       Cookie.remove("chat-theme");
+      Cookie.remove("my-send-sound");
+      Cookie.remove("my-receive-sound");
     }
   },
 

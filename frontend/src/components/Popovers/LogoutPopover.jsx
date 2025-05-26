@@ -1,10 +1,9 @@
-import React from "react";
 import { motion } from "framer-motion";
 import { TriangleAlert } from "lucide-react";
 import LogoutFunc from "../../Funcs/LogoutFunc";
 import { useSettingStore } from "../../store/useSettingsStore";
-import SigninLoader from "../Spinner/signinloader";
 import { usePopoversStore } from "../../store/usePopoversStore";
+import SendLoader from "../Spinner/SendLoader";
 
 export default function LogoutPopover() {
   const {
@@ -42,10 +41,10 @@ export default function LogoutPopover() {
         <div className="gap-5  p-2 flex flex-wrap justify-center items-center flex-row">
           <button
             onClick={Logoutacs}
-            className="transition-all hover:opacity-80 flex-1 p-2 rounded-lg px-4 text-white"
+            className="transition-all hover:opacity-80 flex-1 p-2 rounded-lg px-4 text-white flex items-center justify-center"
             style={{ backgroundColor: myMessageTheme }}
           >
-            {isloggingout ? <SigninLoader /> : "Log Out"}
+            {isloggingout ? <SendLoader color={myMessageTheme} /> : "Log Out"}
           </button>
           <button
             onClick={CloseLogoutPopover}
