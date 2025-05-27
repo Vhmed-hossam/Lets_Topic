@@ -1,6 +1,6 @@
 import { create } from "zustand";
 
-export const usePopoversStore = create((set) => ({
+export const usePopoversStore = create((set, get) => ({
   BlockPopoverState: false,
   DeletePopoverState: false,
   DisablePopoverState: false,
@@ -45,4 +45,13 @@ export const usePopoversStore = create((set) => ({
 
   OpenDeleteMessagePopover: () => set({ DeleteMessagePopoverState: true }),
   CloseDeleteMessagePopover: () => set({ DeleteMessagePopoverState: false }),
+
+  ClosePopoversinChat: () => {
+    get().CloseReportPopover();
+    get().CloseUnfriendPopover();
+    get().CloseWipePopover();
+    get().CloseBlockPopover();
+    get().CloseEditMessagePopover();
+    get().CloseDeleteMessagePopover();
+  },
 }));
