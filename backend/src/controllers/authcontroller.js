@@ -1086,7 +1086,12 @@ export const ReportUser = async (req, res) => {
         message: "Reported user email and reason are required",
       });
     }
-
+    if (!image || !reason) {
+      return res.status(400).json({
+        success: false,
+        message: "you should provide more details for your report",
+      });
+    }
     const reportedUser = await User.findOne({ email: reportedEmail }).select(
       "username _id email"
     );
