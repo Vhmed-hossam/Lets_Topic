@@ -2,7 +2,7 @@ import { usePopoversStore } from "../../store/usePopoversStore";
 import { useChatStore } from "../../store/useChatStore";
 import { useAuthStore } from "../../store/useAuthStore";
 import { useSettingStore } from "../../store/useSettingsStore";
-import { Camera, TriangleAlert } from "lucide-react";
+import { Info, TriangleAlert, X } from "lucide-react";
 import { motion } from "framer-motion";
 import SendLoader from "../Spinner/SendLoader";
 import { useState } from "react";
@@ -32,6 +32,7 @@ export default function ReportPopover() {
       };
     }
   };
+
   return (
     <motion.div
       initial={{ opacity: 0 }}
@@ -68,7 +69,21 @@ export default function ReportPopover() {
           />
         </div>
         <div className="px-2 pt-2 space-y-2">
-          <img src={SelectedImage} />
+          <div className="relative">
+            <img src={SelectedImage} />
+            {SelectedImage && (
+              <div className="absolute top-2 right-2">
+                <button
+                  className="btn p-2 rounded-full bg-very-caution border-0 hover:opacity-80 transition-all"
+                  onClick={() => {
+                    setSelectedImage(null);
+                  }}
+                >
+                  <X />
+                </button>
+              </div>
+            )}
+          </div>
           <p className="pb-2">Upload an image (optional) :</p>
           <label
             htmlFor="avatar-upload"
@@ -86,12 +101,11 @@ export default function ReportPopover() {
         </div>
         <div className="gap-5  p-2 flex flex-wrap justify-center items-center flex-row">
           <button
-            className="transition-all hover:opacity-80 flex-1 p-2 rounded-lg px-4 text-white flex items-center justify-center"
-            style={{ backgroundColor: myMessageTheme }}
+            className="transition-all bg-very-caution hover:opacity-80 flex-1 p-2 rounded-lg px-4 text-white flex items-center justify-center"
             onClick={async () => {
               await ReportUser({
                 reportedEmail: SelectedUser.email,
-                reason: ReportReason,
+                reason: ReportReason.trim(),
                 image: SelectedImage,
               });
               CloseReportPopover();
@@ -103,10 +117,19 @@ export default function ReportPopover() {
           </button>
           <button
             onClick={CloseReportPopover}
-            className="bg-very-caution flex-1 hover:bg-caution transition-all p-2 rounded-lg px-4 text-white"
+            className="bg-very-caution flex-1 hover:opacity-80 transition-all p-2 rounded-lg px-4 text-white"
           >
             Cancel
           </button>
+        </div>
+        <div className="flex flex-row items-center gap-2 text-caution">
+          <div>
+            <Info />
+          </div>
+          <p>
+            False report damages others and can suspend your account. Repeated
+            misuse can lead to permanent restrictions.
+          </p>
         </div>
       </motion.div>
     </motion.div>
