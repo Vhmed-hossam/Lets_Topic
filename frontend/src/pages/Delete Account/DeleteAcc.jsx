@@ -19,15 +19,15 @@ export default function DeleteAccount() {
     CancelOperations,
     isDeleting,
   } = useAuthStore();
-  // useEffect(() => {
-  //   if (
-  //     !authUser.user.codeAuthentication ||
-  //     authUser.user.codeType !== "delete_account"
-  //   ) {
-  //     ErrorToast("You are not allowed to access this page.");
-  //     navigate("/");
-  //   }
-  // }, []);
+  useEffect(() => {
+    if (
+      !authUser.user.codeAuthentication ||
+      authUser.user.codeType !== "delete_account"
+    ) {
+      ErrorToast("You are not allowed to access this page.");
+      navigate("/");
+    }
+  }, []);
   const formRef = useRef(null);
   useGSAP(() => {
     gsap.fromTo(
@@ -60,14 +60,14 @@ export default function DeleteAccount() {
         <input
           type="text"
           placeholder="Code"
-          className="w-full max-w-lg p-4 pl-5 rounded-lg border transition-all border-main focus:ring-2 focus:outline-none focus:ring-main text-sm shadow-sm"
+          className="w-full-m-lg p-4 pl-5 rounded-lg border transition-all border-main focus:ring-2 focus:outline-none focus:ring-main text-sm shadow-sm"
           onChange={(e) => setCode(e.target.value)}
           value={Code}
         />
         <input
           type="text"
           placeholder="Password"
-          className="w-full max-w-lg p-4 pl-5 rounded-lg border transition-all border-main focus:ring-2 focus:outline-none focus:ring-main text-sm shadow-sm"
+          className="w-full-m-lg p-4 pl-5 rounded-lg border transition-all border-main focus:ring-2 focus:outline-none focus:ring-main text-sm shadow-sm"
           onChange={(e) => setPassword(e.target.value)}
           value={Password}
           onPaste={(e) => {
@@ -80,7 +80,7 @@ export default function DeleteAccount() {
           }}
         />
         <button
-          className="btn bg-main disabled:bg-main/60 hover:bg-main/80 w-full max-w-lg"
+          className="btn bg-main disabled:bg-main/60 hover:bg-main/80 w-full-m-lg"
           onClick={async () => {
             await ConfirmDeleteAccount({ code: Code, password: Password });
             navigate("/");
@@ -90,7 +90,7 @@ export default function DeleteAccount() {
         >
           {isDeleting ? <SendLoader color={"#645EE2"} /> : "Delete Account"}
         </button>
-        <div className="w-full max-w-lg flex flex-row justify-between items-center gap-6">
+        <div className="w-full-m-lg flex flex-row justify-between items-center gap-6">
           <button
             onClick={() => {
               setIsPopoverOpen(true);

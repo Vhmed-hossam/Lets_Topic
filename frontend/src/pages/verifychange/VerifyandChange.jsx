@@ -20,15 +20,15 @@ export default function VerifyandChange() {
     isCancelingOperations,
     CancelOperations,
   } = useAuthStore();
-  // useEffect(() => {
-  //   if (
-  //     !authUser.user.codeAuthentication ||
-  //     authUser.user.codeType !== "change_password"
-  //   ) {
-  //     ErrorToast("You are not allowed to access this page.");
-  //     navigate("/");
-  //   }
-  // }, []);
+  useEffect(() => {
+    if (
+      !authUser.user.codeAuthentication ||
+      authUser.user.codeType !== "change_password"
+    ) {
+      ErrorToast("You are not allowed to access this page.");
+      navigate("/");
+    }
+  }, []);
   const formRef = useRef(null);
   useGSAP(() => {
     gsap.fromTo(
@@ -62,15 +62,15 @@ export default function VerifyandChange() {
         <input
           type="text"
           placeholder="Code"
-          className="w-full max-w-lg p-4 pl-5 rounded-lg border transition-all border-main focus:ring-2 focus:outline-none focus:ring-main text-sm shadow-sm"
+          className="w-full-m-lg p-4 pl-5 rounded-lg border transition-all border-main focus:ring-2 focus:outline-none focus:ring-main text-sm shadow-sm"
           onChange={(e) => setCode(e.target.value)}
           value={Code}
         />
-        <div className="flex gap-4 w-full max-w-lg max-sm:flex-col">
+        <div className="flex gap-4 w-full-m-lg max-sm:flex-col">
           <input
             type="text"
             placeholder="Password"
-            className="w-full max-w-lg p-4 pl-5 rounded-lg border transition-all border-main focus:ring-2 focus:outline-none focus:ring-main text-sm shadow-sm"
+            className="w-full-m-lg p-4 pl-5 rounded-lg border transition-all border-main focus:ring-2 focus:outline-none focus:ring-main text-sm shadow-sm"
             onChange={(e) => setPassword(e.target.value)}
             value={Password}
             onPaste={(e) => {
@@ -85,7 +85,7 @@ export default function VerifyandChange() {
           <input
             type="text"
             placeholder="NewPassword"
-            className="w-full max-w-lg p-4 pl-5 rounded-lg border transition-all border-main focus:ring-2 focus:outline-none focus:ring-main text-sm shadow-sm"
+            className="w-full-m-lg p-4 pl-5 rounded-lg border transition-all border-main focus:ring-2 focus:outline-none focus:ring-main text-sm shadow-sm"
             onChange={(e) => setNewPassword(e.target.value)}
             value={NewPassword}
             onPaste={(e) => {
@@ -99,7 +99,7 @@ export default function VerifyandChange() {
           />
         </div>
         <button
-          className="btn bg-main disabled:bg-main/60 hover:bg-main/80 w-full max-w-lg"
+          className="btn bg-main disabled:bg-main/60 hover:bg-main/80 w-full-m-lg"
           onClick={async () => {
             await VerifyandChangePassword({
               verificationCode: Code,
@@ -117,7 +117,7 @@ export default function VerifyandChange() {
             "Change Password"
           )}
         </button>
-        <div className="w-full max-w-lg flex flex-row justify-between items-center gap-6">
+        <div className="w-full-m-lg flex flex-row justify-between items-center gap-6">
           <button
             onClick={() => {
               setIsPopoverOpen(true);
