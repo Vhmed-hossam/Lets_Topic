@@ -21,7 +21,6 @@ import {
   confirmDeleteAccount,
   CancelOperations,
   ConfirmDisableAccount,
-  GetLoggedDevices,
   ReportUser,
 } from "../controllers/authcontroller.js";
 import { protectRoute } from "../middleware/authmiddleware.js";
@@ -58,8 +57,6 @@ router.put("/confirm-delete-account", protectRoute, confirmDeleteAccount);
 router.put("/cancel-operation/:id", protectRoute, CancelOperations);
 
 router.put("/confirm-disable-account", protectRoute, ConfirmDisableAccount);
-
-router.get("/logged-devices/:id", protectRoute, GetLoggedDevices);
 
 router.post("/report-user", protectRoute, ReportUser);
 

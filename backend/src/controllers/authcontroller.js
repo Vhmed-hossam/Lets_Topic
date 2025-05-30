@@ -14,7 +14,7 @@ import SendMessageEmail from "../tasks/SendMessageEmail.js";
 import BannedUser from "../Owner/bannedModel.js";
 import SendCodeEmail from "../tasks/sendCodeEmail.js";
 import Report from "../models/ReportModel.js";
-
+import diffDates from "diff-dates";
 export const signup = async (req, res) => {
   const { fullName, email, password } = req.body;
   try {
@@ -159,33 +159,33 @@ export const login = async (req, res) => {
 
   try {
     const user = await User.findOne({ email });
+
     if (!user) {
       return res.status(400).json({ error: "Incorrect Email or Password" });
     }
-
+    const lastlogoutdate = user.lastLogOut;
+    const todaydate = new Date();
+    const diff = diffDates(todaydate, lastlogoutdate, "days");
+    if (diff > 1) {
+      user.isVerified = false;
+      await user.save();
+    }
     if (!user.isVerified) {
-      const twentyFourHoursAgo = new Date(Date.now() - 24 * 60 * 60 * 1000);
-      const shouldResendCode =
-        !user.lastLoggedIn || user.lastLoggedIn <= twentyFourHoursAgo;
-
-      if (shouldResendCode) {
-        const codeAuthentication = generateAuthCode();
-        const codeExpiration = new Date(Date.now() + 24 * 60 * 60 * 1000);
-        user.codeAuthentication = codeAuthentication;
-        user.codeAuthenticationExpires = codeExpiration;
-        user.codeType = "email_verification";
-        user.lastLoggedIn = new Date();
-        await user.save();
-        await sendEmail(
-          user.fullName,
-          email,
-          codeAuthentication,
-          "Enter Login Code",
-          `We detected a new login to your Let's Topic account. Please use the code below to log in:`,
-          `${BaseUrl}/verify-email`
-        );
-      }
-
+      const codeAuthentication = generateAuthCode();
+      const codeExpiration = new Date(Date.now() + 24 * 60 * 60 * 1000);
+      user.codeAuthentication = codeAuthentication;
+      user.codeAuthenticationExpires = codeExpiration;
+      user.codeType = "email_verification";
+      user.lastLoggedIn = new Date();
+      await user.save();
+      await sendEmail(
+        user.fullName,
+        email,
+        codeAuthentication,
+        "Enter Login Code",
+        `We detected a new login to your Let's Topic account. Please use the code below to log in:`,
+        `${BaseUrl}/verify-email`
+      );
       return res.status(400).json({
         error:
           "Please verify your email first. A new verification code may have been sent.",
@@ -198,6 +198,7 @@ export const login = async (req, res) => {
     }
 
     user.lastLoggedIn = new Date();
+    user.lastLogOut = null;
     await user.save();
     const token = generateToken(user._id, res);
 
@@ -226,7 +227,9 @@ export const logout = async (req, res) => {
       return res.status(404).json({ error: "User not found" });
     }
 
+    user.lastLogOut = new Date();
     await user.save();
+
     res.clearCookie("token");
 
     res.status(200).json({
@@ -234,6 +237,7 @@ export const logout = async (req, res) => {
       token: null,
       user: {
         _id: user._id,
+        lastLogOut: user.lastLogOut,
       },
     });
   } catch (error) {
@@ -1043,31 +1047,6 @@ export const VerifyandResetPassword = async (req, res) => {
       code: verificationCode,
     });
     res.status(500).json({ error: "Internal Server Error" });
-  }
-};
-
-export const GetLoggedDevices = async (req, res) => {
-  const { email } = req.body;
-  const { id } = req.params;
-
-  try {
-    let userId;
-
-    if (email) {
-      const user = await User.findOne({ email });
-      if (!user) return res.status(404).json({ message: "User not found." });
-      userId = user._id;
-    } else {
-      userId = id;
-    }
-
-    return res.status(200).json({
-      isMultipleDevices,
-      deviceCount: uniqueDevices.size,
-    });
-  } catch (err) {
-    console.error("Error detecting multiple devices:", err);
-    return res.status(500).json({ message: "Server error." });
   }
 };
 

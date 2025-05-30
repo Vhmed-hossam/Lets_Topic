@@ -424,22 +424,6 @@ export const useAuthStore = create((set, get) => ({
     }
   },
 
-  GetLoggedDevices: async () => {
-    try {
-      const { authUser } = get();
-      const id = authUser?.user?._id;
-      if (!id) {
-        throw new Error("User ID is missing");
-      }
-      const res = await axiosInstance.get("/auth/logged-devices/" + id);
-      return res.data;
-    } catch (error) {
-      console.error("GetLoggedDevices error:", error);
-      ErrorToast(
-        error.response?.data?.error || "Failed to fetch logged devices"
-      );
-    }
-  },
   ReportUser: async (data) => {
     set({ isReportingUser: true });
     try {
