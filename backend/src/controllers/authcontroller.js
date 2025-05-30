@@ -166,7 +166,7 @@ export const login = async (req, res) => {
     const lastlogoutdate = user.lastLogOut;
     const todaydate = new Date();
     const diff = diffDates(todaydate, lastlogoutdate, "days");
-    if (diff > 1) {
+    if (diff >= 1) {
       user.isVerified = false;
       await user.save();
     }
