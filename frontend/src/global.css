@@ -97,3 +97,10 @@ input[type="range"].custom-thumb::-webkit-slider-thumb {
   opacity: 1;
   border: 1px solid var(--color-main);
 }
+.scrollbar-hide {
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE 10+ */
+}
+.scrollbar-hide::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Opera */
+}

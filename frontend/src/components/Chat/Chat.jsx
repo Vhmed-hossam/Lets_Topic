@@ -89,7 +89,7 @@ export default function Chat() {
         )}{" "}
       </AnimatePresence>
       <div
-        className="flex flex-1 self-stretch flex-col overflow-auto "
+        className="flex flex-1 self-stretch flex-col overflow-auto scrollbar-hide"
         ref={scrollRef}
       >
         <div className="flex flex-col self-stretch flex-1">
