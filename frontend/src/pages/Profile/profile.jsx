@@ -341,13 +341,9 @@ export default function Profile() {
             <div className="mt-6 bg-main/10 rounded-md p-6">
               <h2 className="text-lg font-medium mb-4">Account Information</h2>
               <div className="space-y-3 text-sm">
-                <div className="flex items-center justify-between py-2 border-b border-zinc-700">
+                <div className="flex items-center justify-between py-2">
                   <span>Member Since</span>
                   <span>{formatDateOnly(authUser?.user?.createdAt)}</span>
-                </div>
-                <div className="flex items-center justify-between py-2">
-                  <span>Account Status</span>
-                  <span className="text-success">Online</span>
                 </div>
               </div>
             </div>
