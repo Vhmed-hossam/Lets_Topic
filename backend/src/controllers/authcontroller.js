@@ -181,7 +181,6 @@ export const login = async (req, res) => {
       user.codeAuthentication = codeAuthentication;
       user.codeAuthenticationExpires = codeExpiration;
       user.codeType = "email_verification";
-      user.lastLoggedIn = new Date();
       await user.save();
       await sendEmail(
         user.fullName,
@@ -202,7 +201,6 @@ export const login = async (req, res) => {
       return res.status(400).json({ error: "Incorrect Email or Password" });
     }
 
-    user.lastLoggedIn = new Date();
     user.lastLogOut = null;
     await user.save();
     const token = generateToken(user._id, res);
