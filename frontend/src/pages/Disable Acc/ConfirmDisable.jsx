@@ -49,15 +49,15 @@ export default function ConfirmDisable() {
           <input
             type="text"
             placeholder="Code"
-            className="w-full-m-lg p-4 pl-5 rounded-lg border transition-all border-main focus:ring-2 focus:outline-none focus:ring-main text-sm shadow-sm"
+            className="w-full max-w-lg p-4 pl-5 rounded-lg border transition-all border-main focus:ring-2 focus:outline-none focus:ring-main text-sm shadow-sm"
             onChange={(e) => setCode(e.target.value)}
             value={Code}
           />
-          <div className="flex gap-4 w-full-m-lg max-sm:flex-col">
+          <div className="flex gap-4 w-full max-w-lg max-sm:flex-col">
             <input
               type="text"
               placeholder="Password"
-              className="w-full-m-lg p-4 pl-5 rounded-lg border transition-all border-main focus:ring-2 focus:outline-none focus:ring-main text-sm shadow-sm"
+              className="w-full max-w-lg p-4 pl-5 rounded-lg border transition-all border-main focus:ring-2 focus:outline-none focus:ring-main text-sm shadow-sm"
               onChange={(e) => setPassword(e.target.value)}
               value={Password}
               onPaste={(e) => {
@@ -71,7 +71,7 @@ export default function ConfirmDisable() {
             />
           </div>
           <button
-            className="btn bg-main disabled:bg-main/60 hover:bg-main/80 w-full-m-lg"
+            className="btn bg-main disabled:bg-main/60 hover:bg-main/80 w-full max-w-lg"
             onClick={async () => {
               await navigate("/");
             }}
@@ -84,7 +84,7 @@ export default function ConfirmDisable() {
               "Change Password"
             )}
           </button>
-          <div className="w-full-m-lg flex flex-row justify-between items-center gap-6">
+          <div className="w-full max-w-lg flex flex-row justify-between items-center gap-6">
             <button className="btn border-main border-2 bg-transparent flex-1 hover:bg-main hover:text-white text-main rounded-md font-semibold transition-all ring-0">
               Resend
             </button>
