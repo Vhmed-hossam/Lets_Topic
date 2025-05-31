@@ -176,7 +176,7 @@ export default function Signup() {
         <div className="hidden lg:flex items-center justify-center p-12">
           <AuthImagePattern
             title={"Welcome to Let's Topic"}
-            subtitle={"Sign up to get started"}
+            subtitle={"Sign up to get started and chat with your friends"}
           />
         </div>
       </div>
