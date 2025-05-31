@@ -8,7 +8,7 @@ export default function NonActive() {
           alt="Loading..."
           className="animate-spin h-24 w-24"
         />
-        <h2 className="text-xl">Laoding...</h2>
+        <h2 className="text-xl">Loading...</h2>
       </div>
     </>
   );
