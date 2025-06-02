@@ -1,1 +1,2 @@
-![Logo Banner](./Images/Banner-Default.png)
+<img src="./Images/Banner-Default.png" alt="Banner" style="width: 100%;" />
+
