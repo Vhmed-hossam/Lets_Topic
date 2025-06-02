@@ -5,7 +5,6 @@ import { useEffect, useState } from "react";
 import Spinner from "./components/Spinner/spinner";
 import { useSettingStore } from "./store/useSettingsStore";
 import useNetworkStatus from "./connection/handleNetwork";
-import NetworkStatusView from "./Connection/Offline Page/OfflinePage";
 import { preloadImages } from "./helpers/imagesloader";
 import { Banners } from "./Data/Banners";
 import NonActive from "./components/non-activated/NActive";
@@ -17,6 +16,7 @@ import { useExpandVideo } from "./store/useExpandVideo";
 import { motion, AnimatePresence } from "framer-motion";
 import ExpandedVideo from "./components/ExpandedVideo/ExpandedVideo";
 import { useFriendsStore } from "./store/useFriendsStore";
+import NetworkStatusView from "./connection/OfflinePage/OfflinePage";
 export default function App() {
   const [Activated, setActivated] = useState(false);
   const isOnline = useNetworkStatus();
