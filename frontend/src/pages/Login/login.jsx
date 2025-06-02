@@ -77,7 +77,7 @@ export default function Login() {
           ref={formRef}
         >
           <div className="size-20  rounded-xl p-2 bg-second/25 mb-3 flex items-center justify-center hover:bg-main/25 transition">
-            <img src="/Let's Topic mlogo.png" alt="Let's Topic" />
+            <img src="/Images/Let's Topic mlogo.png" alt="Let's Topic" />
           </div>
           <form
             className="w-full max-w-lg p-2 rounded-lg space-y-6"

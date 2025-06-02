@@ -12,7 +12,7 @@ export default function Nochat() {
            justify-center"
               style={{ background: myMessageTheme + "4a" }}
             >
-              <img src="/Let's Topic mlogo.png" />
+              <img src="/Images/Let's Topic mlogo.png" />
             </div>
           </div>
         </div>

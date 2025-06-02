@@ -17,7 +17,7 @@ export default function Navbar() {
               >
                 <div className="rounded-lg bg-main/25 flex items-center justify-center">
                   <img
-                    src="/Let's Topic mlogo.png"
+                    src="/Images/Let's Topic mlogo.png"
                     alt="Logo"
                     className="h-10"
                   />
