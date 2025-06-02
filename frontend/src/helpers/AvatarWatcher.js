@@ -7,7 +7,7 @@ import { dirname } from 'path';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-const folderToWatch = path.join(__dirname, '..', '..', 'public', 'Avatars');
+const folderToWatch = path.join(__dirname, '..', '..', 'Images', 'Avatars');
 const avatarsFilePath = path.join(__dirname, 'avatars.js'); 
 
 const watcher = chokidar.watch(folderToWatch, {
