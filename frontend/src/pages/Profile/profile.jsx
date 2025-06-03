@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect } from "react";
+import { useRef, useState } from "react";
 import { useAuthStore } from "../../store/useAuthStore";
 import {
   Camera,
