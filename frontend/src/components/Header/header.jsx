@@ -5,7 +5,7 @@ export default function header({ title , subtitle}) {
     <div className="flex flex-col items-center gap-3">
       <div className="size-20 rounded-xl p-2 bg-second/25 flex items-center justify-center hover:bg-main/25 transition-all shadow-md">
         <img
-          src="/Public/Let's Topic mlogo.png"
+          src=" /Let's Topic mlogo.png"
           alt="Let's Topic"
           className="max-h-full max-w-full object-contain"
         />
