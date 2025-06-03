@@ -122,7 +122,7 @@ export default function Sidebar() {
                 )}
                 {unreadCount > 0 && (
                   <span
-                    className="absolute bg-red-400 top-0 right-0 text-white text-xs font-medium rounded-full h-5 w-5 flex items-center justify-center ring-2 ring-zinc-900"
+                    className="absolute top-0 right-0 text-white text-xs font-medium rounded-full h-5 w-5 flex items-center justify-center ring-2 ring-zinc-900"
                     style={{ zIndex: 10, backgroundColor: myMessageTheme }}
                   >
                     {unreadCount > 9 ? "9+" : unreadCount}

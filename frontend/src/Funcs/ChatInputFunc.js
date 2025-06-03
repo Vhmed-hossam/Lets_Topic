@@ -216,6 +216,6 @@ export default function useChatinputLogic() {
     setVideoBase64,
     setImageBase64,
     setMediaType,
-    setMediaPreview,
+    setMediaPreview,adjustTextareaHeight
   };
 }

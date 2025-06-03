@@ -30,7 +30,7 @@ export default function Chatinput() {
     setVideoBase64,
     setImageBase64,
     setMediaType,
-    setMediaPreview,
+    adjustTextareaHeight
   } = useChatinputLogic();
   onEscapeKeyPress();
   return (

@@ -107,7 +107,7 @@ export default function ChatHeader() {
                   searchResults.map((message, index) => (
                     <div
                       key={index}
-                      className="p-2 rounded hover:bg-red-300 max-w-md overflow-hidden w-full cursor-pointer transition-all duration-500 bg-transparent"
+                      className="p-2 rounded hover:bg-base-200 overflow-x-auto max-w-2xl overflow-hidden w-full cursor-pointer transition-all duration-500 bg-transparent"
                       onClick={() => {
                         const el = document.getElementById(
                           `message-${message._id}`
