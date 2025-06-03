@@ -5,7 +5,7 @@ export default function Spinner() {
     <>
       <div className="flex items-center justify-center h-screen">
         <img
-          src="/Images/Let's Topic mlogo.png"
+          src="/Public/Let's Topic mlogo.png"
           alt="Loading..."
           className="animate-spin h-24 w-24"
         />

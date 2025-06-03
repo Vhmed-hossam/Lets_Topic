@@ -6,5 +6,7 @@ export default defineConfig({
   plugins: [react(), tailwindcss()],
   build: {
     sourcemap: true,
+    assetsInclude: ["**/*.mp3", "**/*.png", "**/*.ogg"],
   },
+  base: "/",
 });
