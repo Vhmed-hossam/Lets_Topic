@@ -17,6 +17,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import ExpandedVideo from "./components/ExpandedVideo/ExpandedVideo";
 import { useFriendsStore } from "./store/useFriendsStore";
 import NetworkStatusView from "./connection/OfflinePage/OfflinePage";
+import { ErrorToast } from "./components/Toast/Toasters";
 export default function App() {
   const [Activated, setActivated] = useState(false);
   const isOnline = useNetworkStatus();
@@ -34,7 +35,10 @@ export default function App() {
       Banners.map((b) => b.url)
     ).then(() => {
       setActivated(true);
-    });
+    }).catch(() => {
+      setActivated(true);
+      ErrorToast("Failed to load images , please refresh the page.");
+    })
   }, [checkAuth]);
   useEffect(() => {
     checkAuth();
