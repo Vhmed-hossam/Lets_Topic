@@ -1,5 +1,9 @@
 import { createBrowserRouter, Navigate } from "react-router-dom";
-import { ProtectedAuthRoute, ProtectedRoute } from "../Auth/Protection";
+import {
+  ProtectedAuthRoute,
+  ProtectedRoute,
+  ProtectedVerifyRoute,
+} from "../Auth/Protection";
 import Layout from "../Layout/layout";
 import Home from "../pages/Home/home";
 import Login from "../pages/Login/login";
@@ -155,33 +159,33 @@ const letstopic = createBrowserRouter([
       {
         path: "/change-password",
         element: (
-          <ProtectedRoute>
+          <ProtectedVerifyRoute>
             <VerifyandChange />
-          </ProtectedRoute>
+          </ProtectedVerifyRoute>
         ),
       },
       {
         path: "/confirm-delete-account",
         element: (
-          <ProtectedRoute>
+          <ProtectedVerifyRoute>
             <DeleteAccount />
-          </ProtectedRoute>
+          </ProtectedVerifyRoute>
         ),
       },
       {
         path: "/reset-password",
         element: (
-          <ProtectedAuthRoute>
+          <ProtectedVerifyRoute>
             <Resetpassword />
-          </ProtectedAuthRoute>
+          </ProtectedVerifyRoute>
         ),
       },
       {
         path: "/confirm-disable-account",
         element: (
-          <ProtectedRoute>
+          <ProtectedVerifyRoute>
             <ConfirmDisable />
-          </ProtectedRoute>
+          </ProtectedVerifyRoute>
         ),
       },
       {
