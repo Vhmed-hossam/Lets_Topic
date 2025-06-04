@@ -98,7 +98,7 @@ export default function ChatHeader() {
             </button>
           </div>
           <div
-            className={`mt-3 max-h-60 overflow-y-auto bg-base-100 border border-base-300 rounded-lg
+            className={`mt-3 max-h-60 max-md:w-md overflow-y-auto bg-base-100 border border-base-300 rounded-lg
           ${searchText.trim() ? "p-2" : "p-0 border-none"}`}
           >
             <div className="flex flex-col items-start">
@@ -107,7 +107,7 @@ export default function ChatHeader() {
                   searchResults.map((message, index) => (
                     <div
                       key={index}
-                      className="p-2 rounded hover:bg-base-200 overflow-x-auto max-w-2xl overflow-hidden w-full cursor-pointer transition-all duration-500 bg-transparent"
+                      className="p-2 rounded hover:bg-base-200 overflow-x-auto max-w-xl overflow-hidden w-full cursor-pointer transition-all duration-500 bg-transparent"
                       onClick={() => {
                         const el = document.getElementById(
                           `message-${message._id}`

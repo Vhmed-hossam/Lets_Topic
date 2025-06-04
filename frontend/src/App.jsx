@@ -85,7 +85,7 @@ export default function App() {
 
   return (
     <>
-      <div data-theme={theme}>
+      <div data-theme={theme} className="overflow-hidden">
         <RouterProvider router={letstopic} />
         <Toaster />
       </div>
