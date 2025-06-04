@@ -25,7 +25,7 @@ export function ProtectedVerifyRoute({ children }) {
   const { authUser } = useAuthStore();
 
   if (!authUser) return;
-  if (authUser.user.codeAuthentication) return { children };
+  if (authUser.user.codeAuthentication) return children;
 
   return <Navigate to="/" replace />;
 }
