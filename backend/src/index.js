@@ -13,7 +13,7 @@ import WipeChatRoutes from "./routes/wipchat.route.js";
 export const BaseUrl =
   process.env.NODE_ENV === "development"
   ? "http://localhost:5173"
-  : process.env.BASE_URL
+  : process.env.VITE_BASE_URL
 dotenv.config();
 app.use(
   cors({
