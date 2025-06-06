@@ -31,10 +31,8 @@
     "react-hot-toast": "^2.5.2",
     "react-router-dom": "^7.4.1",
     "socket.io-client": "^4.8.1",
-    "swiper": "^11.2.6",
     "tailwindcss": "^4.0.17",
     "wavesurfer.js": "^7.9.4",
-    "workbox-webpack-plugin": "^7.3.0",
     "yup": "^1.6.1",
     "zustand": "^5.0.3"
   },
