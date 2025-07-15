@@ -122,6 +122,8 @@
 
 ## Enviroment Variables
 
+#### Backend
+
 ```
 MONGODB_URL=...
 
@@ -144,5 +146,12 @@ CLOUDINARY_URL=...
 OWNER_REQUEST_KEY=...
 ```
 
+#### Frontend
+
+```
+
+VITE_SERVER_URL=...
+
+```
 <hr style="background-color: #645EE2; height: 3px">
 <p style="text-align:center;padding: 0px;">Brought to you by Vhmed</p>
