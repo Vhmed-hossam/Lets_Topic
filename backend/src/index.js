@@ -10,10 +10,8 @@ import OwnerRoutes from "./Owner/owner.route.js";
 import MessageRoutes from "./routes/message.route.js";
 import FriendRoutes from "./routes/friends.route.js";
 import WipeChatRoutes from "./routes/wipchat.route.js";
-export const BaseUrl =
-  process.env.NODE_ENV === "development"
-  ? "http://localhost:5173"
-  : process.env.VITE_BASE_URL
+export const BaseUrl = "http://localhost:5173";
+
 dotenv.config();
 app.use(
   cors({
