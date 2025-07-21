@@ -131,6 +131,10 @@ JWT_SECRET=...
 
 VITE_BASE_URL=...
 
+PORT=5001
+
+NODE_ENV=development
+
 CLOUDINARY_CLOUD_NAME=...
 
 OWNER_EMAIL=...
@@ -146,12 +150,5 @@ CLOUDINARY_URL=...
 OWNER_REQUEST_KEY=...
 ```
 
-#### Frontend
-
-```
-
-VITE_SERVER_URL=...
-
-```
 <hr style="background-color: #645EE2; height: 3px">
 <p style="text-align:center;padding: 0px;">Brought to you by Vhmed</p>
