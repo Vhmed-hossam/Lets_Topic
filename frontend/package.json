@@ -5,12 +5,7 @@
   "scripts": {
     "dev": "vite --host",
     "build": "vite build",
-    "lint": "eslint .",
-    "preview": "vite preview",
-    "prod": "npm run build && npm run preview"
-  },
-  "server": {
-    "host": "0.0.0.0"
+    "lint": "eslint ."
   },
   "dependencies": {
     "@gsap/react": "^2.1.2",

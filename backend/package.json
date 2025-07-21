@@ -1,12 +1,10 @@
 {
   "name": "lets-topic-database",
   "version": "1.0.0",
-  "main": "dist/index.js",
+  "main": "src/index.js",
   "scripts": {
     "dev": "nodemon src/index.js",
-    "start": "node dist/index.js",
-    "build": "tsc",
-    "prod": "npm run build && npm start"
+    "start": "node src/index.js"
   },
   "keywords": [],
   "author": "",
@@ -14,6 +12,7 @@
   "license": "ISC",
   "description": "Let's Topic Backend API",
   "dependencies": {
+    "@types/mongoose": "^5.11.96",
     "axios": "^1.8.4",
     "bcryptjs": "^3.0.2",
     "cloudinary": "^2.6.0",
@@ -32,11 +31,10 @@
     "uuid": "^11.1.0"
   },
   "devDependencies": {
-    "nodemon": "^3.1.9",
-    "typescript": "^5.3.3",
-    "@types/node": "^20.11.0",
-    "@types/express": "^4.17.21",
     "@types/cors": "^2.8.17",
-    "@types/mongoose": "^8.0.11"
+    "@types/express": "^4.17.21",
+    "@types/node": "^20.11.0",
+    "nodemon": "^3.1.9",
+    "typescript": "^5.3.3"
   }
 }
