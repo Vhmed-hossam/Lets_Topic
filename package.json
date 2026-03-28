@@ -19,5 +19,8 @@
   "bugs": {
     "url": "https://github.com/Vhmed-hossam/Let-s-Topic/issues"
   },
-  "homepage": "https://github.com/Vhmed-hossam/Let-s-Topic#readme"
+  "homepage": "https://github.com/Vhmed-hossam/Let-s-Topic#readme",
+  "dependencies": {
+    "@vitejs/plugin-react": "^6.0.1"
+  }
 }
