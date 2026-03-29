@@ -25,6 +25,7 @@ app.use(
     allowedHeaders: ["Content-Type", "Authorization"],
   })
 );
+console.log("PORT from env:", process.env.PORT);
 const port = process.env.PORT || 5001;
 const __dirname = path.resolve();
 app.use(express.json({ limit: "10mb" }));
