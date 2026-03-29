@@ -49,6 +49,7 @@ export const signup = async (req, res) => {
     });
 
     await newUser.save();
+console.log("User saved, sending email...");
 
     await sendEmail(
       fullName,

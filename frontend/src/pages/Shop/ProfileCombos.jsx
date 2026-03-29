@@ -155,7 +155,7 @@ export default function Shop() {
                     disabled={IsUpdatingProfilePic}
                     onClick={() => {
                       handleProfilePicChange(avatar.url, index);
-                    }}
+ }}
                     style={{ color: getContrastingTextColor("#645EE2") }}
                   >
                     {IsUpdatingProfilePic ? (
