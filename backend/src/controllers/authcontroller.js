@@ -33,7 +33,7 @@ export const signup = async (req, res) => {
     }
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
-    const newUsername = generateUsername(fullName);
+    const newUsername = await generateUsername(fullName);
     const codeAuthentication = generateAuthCode();
     const codeExpiration = new Date(Date.now() + 24 * 60 * 60 * 1000);
 
@@ -49,16 +49,6 @@ export const signup = async (req, res) => {
     });
 
     await newUser.save();
-console.log("User saved, sending email...");
-
-    await sendEmail(
-      fullName,
-      email,
-      codeAuthentication,
-      "Verify Your Email",
-      "Please use the code below to verify your email address:",
-      `${BaseUrl}/verify-email`
-    );
 
     res.status(201).json({
       message:
@@ -78,7 +68,7 @@ console.log("User saved, sending email...");
     console.error("Signup error:", error);
     res
       .status(500)
-      .json({ error: "Internal Server Error", details: error.message });
+      .json({ error: "Internalff Server Error", details: error.message });
   }
 };
 
