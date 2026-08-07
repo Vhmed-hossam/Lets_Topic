@@ -23,8 +23,8 @@ export function ProtectedAuthRoute({ children }) {
 
 export function ProtectedVerifyRoute({ children }) {
   const { authUser } = useAuthStore();
-
-  if (!authUser) return;
+  console.log(authUser);
+  if (!authUser) return <Navigate to="/login" replace />;
   if (authUser.user.codeAuthentication) return children;
 
   return <Navigate to="/" replace />;

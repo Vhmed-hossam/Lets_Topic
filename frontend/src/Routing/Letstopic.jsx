@@ -175,9 +175,9 @@ const letstopic = createBrowserRouter([
       {
         path: "/reset-password",
         element: (
-          <ProtectedVerifyRoute>
+          <ProtectedAuthRoute>
             <Resetpassword />
-          </ProtectedVerifyRoute>
+          </ProtectedAuthRoute>
         ),
       },
       {

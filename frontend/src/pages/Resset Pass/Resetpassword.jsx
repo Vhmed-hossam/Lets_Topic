@@ -8,7 +8,6 @@ import SigninLoader from "../../components/Spinner/signinloader";
 import { useNavigate } from "react-router-dom";
 
 export default function Resetpassword() {
-  // for users who forgot their password
   const [code, setCode] = useState("");
   const [NewPassword, setNewPassword] = useState("");
   const { ResetPassword, isResettingPass } = useAuthStore();

@@ -35,7 +35,6 @@ export default function Notifications() {
   const {
     acceptFriendRequest,
     declineFriendRequest,
-    WipechatRequest,
     acceptWipeChatRequest,
     declineWipeChatRequest,
   } = useFriendsStore();
@@ -223,15 +222,19 @@ export default function Notifications() {
                     {notification.type === "friend_request_received" && (
                       <div className="mt-3 flex gap-3">
                         <button
-                          className="bg-main text-white px-4 py-1 rounded-md hover:bg-green-600 transition-all"
+                          className="bg-main text-white px-4 py-1 rounded-md transition-all"
                           onClick={() =>
                             acceptFriendRequest(notification.requestId)
                           }
+                          style={{
+                            backgroundColor: myMessageTheme,
+                          }}
+
                         >
                           Accept
                         </button>
                         <button
-                          className="bg-very-caution text-white px-4 py-1 rounded-md hover:bg-red-600 transition-all"
+                          className="bg-caution text-white px-4 py-1 rounded-md hover:bg-red-600 transition-all"
                           onClick={() =>
                             declineFriendRequest(notification.requestId)
                           }
