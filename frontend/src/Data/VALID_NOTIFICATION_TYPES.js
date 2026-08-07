@@ -12,4 +12,5 @@ export const VALID_NOTIFICATION_TYPES = [
   "wipe_chat_accepted",
   "wipe_chat_declined",
   "wipe_chat_request_sent",
+  "feedback_sent"
 ];

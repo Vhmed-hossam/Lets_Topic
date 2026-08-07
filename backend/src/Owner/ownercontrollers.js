@@ -147,3 +147,5 @@ export const GetOneReport = async (req, res) => {
     console.error("Error fetching report:", error);
   }
 };
+
+export const GetFeedbacks = {}

@@ -68,7 +68,7 @@ export const signup = async (req, res) => {
     console.error("Signup error:", error);
     res
       .status(500)
-      .json({ error: "Internalff Server Error", details: error.message });
+      .json({ error: "Internal Server Error", details: error.message });
   }
 };
 

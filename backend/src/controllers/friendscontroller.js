@@ -450,9 +450,7 @@ export const unfriendUser = async (req, res) => {
     if (io) {
       io.to(userId.toString()).emit("newNotification", initiatorNotif);
       io.to(friendId.toString()).emit("newNotification", friendNotif);
-      console.log(
-        `Emitted notifications - userId: ${userId}, friendId: ${friendId}`
-      );
+      
     } else {
       console.warn("Socket.IO instance not available");
     }

@@ -25,4 +25,5 @@ router.get("/reports", validateOwnerKey, GetReports);
 
 router.get("/reports/:id", validateOwnerKey, GetOneReport);
 
+
 export default router;

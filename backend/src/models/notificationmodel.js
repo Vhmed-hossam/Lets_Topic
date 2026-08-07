@@ -25,7 +25,9 @@ const notificationSchema = new mongoose.Schema({
       "wipe_chat_declined",
       "wipe_chat_request_sent",
       "account_deleted",
-      "report_sent"
+      "report_sent",
+      "friend_request_received",
+      "feedback_sent",
     ],
     required: true,
   },

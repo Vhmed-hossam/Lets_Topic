@@ -10,6 +10,7 @@ import OwnerRoutes from "./Owner/owner.route.js";
 import MessageRoutes from "./routes/message.route.js";
 import FriendRoutes from "./routes/friends.route.js";
 import WipeChatRoutes from "./routes/wipchat.route.js";
+// import FeedbackRoutes from "./routes/feedback.route.js";
 dotenv.config();
 export const BaseUrl =
   process.env.NODE_ENV === "development"
@@ -25,7 +26,6 @@ app.use(
     allowedHeaders: ["Content-Type", "Authorization"],
   })
 );
-console.log("PORT from env:", process.env.PORT);
 const port = process.env.PORT || 5001;
 const __dirname = path.resolve();
 app.use(express.json({ limit: "10mb" }));
@@ -36,6 +36,7 @@ app.use("/api/messages", MessageRoutes);
 app.use("/api/owner", OwnerRoutes);
 app.use("/api/friends", FriendRoutes);
 app.use("/api/wipechat", WipeChatRoutes);
+// app.use("/api/submitfeedback", FeedbackRoutes);
 if (process.env.NODE_ENV === "production") {
   app.use(express.static(path.join(__dirname, "../frontend/dist")));
 
