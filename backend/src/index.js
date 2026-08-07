@@ -36,11 +36,10 @@ app.use("/api/messages", MessageRoutes);
 app.use("/api/owner", OwnerRoutes);
 app.use("/api/friends", FriendRoutes);
 app.use("/api/wipechat", WipeChatRoutes);
-// app.use("/api/submitfeedback", FeedbackRoutes);
 if (process.env.NODE_ENV === "production") {
   app.use(express.static(path.join(__dirname, "../frontend/dist")));
 
-  app.get("*", (req, res) => {
+  app.get("*", (_, res) => {
     res.sendFile(path.join(__dirname, "../frontend", "dist", "index.html"));
   });
 }
