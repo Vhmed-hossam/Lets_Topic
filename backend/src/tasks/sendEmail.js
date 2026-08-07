@@ -1,4 +1,9 @@
 import nodemailer from "nodemailer";
+import path from "path";
+import { fileURLToPath } from "url";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 export default async function sendEmail(
   name,
@@ -6,14 +11,11 @@ export default async function sendEmail(
   code,
   type,
   text,
-  gotoUrl
+  gotoUrl,
 ) {
   try {
     const transporter = nodemailer.createTransport({
-      host: "smtp.gmail.com",
-      port: 465,
       service: "gmail",
-      secure: true,
       auth: {
         user: process.env.OWNER_EMAIL,
         pass: process.env.EMAIL_SENDING_VALUE,
@@ -38,15 +40,14 @@ export default async function sendEmail(
             </h3>
           </div>
           <div style="text-align: center; margin: 30px 0;">
-            <a href="${gotoUrl}" style="text-decoration: none;">
-              <button style="background-color: #645EE2; color: white; padding: 14px 24px; border: none; border-radius: 6px; cursor: pointer; font-size: 16px;">
-                ${type}
-              </button>
+            <a href="${gotoUrl}" style="background-color: #645EE2; color: #ffffff; padding: 14px 24px; text-decoration: none; border-radius: 6px; font-size: 16px; display: inline-block; font-weight: bold;">
+              ${type}
             </a>
           </div>
-          <p style="font-size: 14px; color: #888;text-align: center;">
-If this was you, no action is needed.  <br>
-If this wasn’t you, please secure your account immediately by changing your password.          </p>
+          <p style="font-size: 14px; color: #888; text-align: center;">
+            If this was you, no action is needed. <br>
+            If this wasn’t you, please secure your account immediately by changing your password.
+          </p>
           <hr style="border: none; border-top: 1px solid #eee; margin: 30px 0;" />
           <p style="text-align: center; font-size: 12px; color: #999;">&copy; ${new Date().getFullYear()} Let's Topic. All rights reserved.</p>
         </div>
@@ -62,14 +63,17 @@ If this wasn’t you, please secure your account immediately by changing your pa
       attachments: [
         {
           filename: "logo.png",
-          path: "./public/images/logo.png",
+
+          path: path.join(__dirname, "..", "public", "images", "logo.png"),
           cid: logoCid,
         },
       ],
     };
 
-    await transporter.sendMail(mailOptions);
+    const info = await transporter.sendMail(mailOptions);
+    return info;
   } catch (error) {
     console.error("Error sending email:", error);
+    throw error;
   }
 }
