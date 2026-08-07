@@ -63,8 +63,7 @@ export default async function sendEmail(
       attachments: [
         {
           filename: "logo.png",
-
-          path: path.join(__dirname, "..", "public", "images", "logo.png"),
+          path: "./public/images/logo.png",
           cid: logoCid,
         },
       ],
