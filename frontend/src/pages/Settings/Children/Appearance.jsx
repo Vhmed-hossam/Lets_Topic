@@ -94,13 +94,20 @@ export default function Appearance() {
             <h2 className="text-lg font-semibold">Theme</h2>
             <p className="text-sm text-base-content/70">Choose Your Theme</p>
           </div>
-          <div className="flex flex-wrap items-center justify-center gap-5 p-4 bg-main/25 rounded-xl">
+          <div
+            className="flex flex-wrap items-center justify-center gap-5 p-4 rounded-xl"
+            style={{ backgroundColor: myMessageTheme + "25" }}
+          >
             {Themes.map((t) => (
               <button
                 key={t}
                 className={`group flex flex-col items-center gap-1.5 p-2 rounded-lg transition-colors 
-              ${theme === t ? "bg-main text-white" : "hover:bg-second/25"}`}
+              ${theme === t ? "" : "hover:bg-second/25"}`}
                 onClick={() => SetTheme(t)}
+                style={{
+                  backgroundColor: theme === t ? myMessageTheme : "transparent",
+                  color: theme === t ? textColor : "inherit",
+                }}
               >
                 <div
                   className="relative h-8 w-full min-w-20 rounded-md overflow-hidden"

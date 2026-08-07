@@ -8,6 +8,7 @@ import capitalizeFirstLetter from "../../helpers/capitalizeFirstLetter";
 import { useSettingStore } from "../../store/useSettingsStore";
 import { defaultImage } from "../../Data/Avatars";
 import { ErrorToast } from "../../components/Toast/Toasters";
+import { ChevronLeft } from "lucide-react";
 
 export default function Settings() {
   const { pathname } = useLocation();
@@ -81,10 +82,20 @@ export default function Settings() {
                     className="p-2 border-b border-second"
                     style={{ borderColor: myMessageTheme }}
                   >
-                    <div className="flex items-center justify-center pb-1">
+                    <div className="flex items-center justify-between pb-1">
+                      <div>
+                        <Link
+                          to="/settings"
+                          className="flex items-center gap-0.5"
+                        >
+                          <ChevronLeft />
+                          Back
+                        </Link>
+                      </div>
                       <h2 className="text-xl font-bold">
                         {capitalizeFirstLetter(pathname.split("/")[2])}
                       </h2>
+                      <div></div>
                     </div>
                   </div>
                 </div>

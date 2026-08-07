@@ -212,7 +212,7 @@ export default function Account() {
                 Danger Zone
               </h2>
             </div>
-            <div className="w-full border-2 border-very-caution rounded-lg p-3 flex flex-col gap-3 p-0.5">
+            <div className="w-full border-2 border-very-caution rounded-lg p-3 flex flex-col gap-3">
               <div className="flex flex-row gap-2 items-center justify-between">
                 <div>
                   <h3 className="text-lg font-semibold">Disable Account</h3>
