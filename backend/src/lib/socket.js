@@ -1,13 +1,19 @@
 import { Server } from "socket.io";
 import http from "http";
 import express from "express";
+import { BaseUrl } from "..";
 
 const app = express();
 const server = http.createServer(app);
 
+const CLIENT_URL =
+  process.env.NODE_ENV === "development"
+    ? "http://localhost:5173"
+    : process.env.CLIENT_URL;
+
 const io = new Server(server, {
   cors: {
-    origin: "http://localhost:5173",
+    origin: BaseUrl,
     credentials: true,
   },
 });
@@ -32,7 +38,9 @@ io.on("connection", (socket) => {
   const userId = socket.handshake.auth.userId;
 
   if (!userId || userId === "undefined") {
-    console.error("Invalid or missing userId for socket:", socket.id, { userId });
+    console.error("Invalid or missing userId for socket:", socket.id, {
+      userId,
+    });
     socket.disconnect(true);
     return;
   }
@@ -70,7 +78,12 @@ io.on("connection", (socket) => {
 
   socket.on("editMessage", ({ messageId, newText, senderId, receiverId }) => {
     if (!messageId || !newText || !senderId || !receiverId) {
-      console.error("Invalid editMessage data:", { messageId, newText, senderId, receiverId });
+      console.error("Invalid editMessage data:", {
+        messageId,
+        newText,
+        senderId,
+        receiverId,
+      });
       return;
     }
     const room = [senderId, receiverId].sort().join("-");
@@ -87,7 +100,11 @@ io.on("connection", (socket) => {
 
   socket.on("deleteMessage", ({ messageId, senderId, receiverId }) => {
     if (!messageId || !senderId || !receiverId) {
-      console.error("Invalid deleteMessage data:", { messageId, senderId, receiverId });
+      console.error("Invalid deleteMessage data:", {
+        messageId,
+        senderId,
+        receiverId,
+      });
       return;
     }
     const room = [senderId, receiverId].sort().join("-");

@@ -3,7 +3,6 @@ import dotenv from "dotenv";
 import { connectDB } from "./lib/db.js";
 import cors from "cors";
 import path from "path";
-import fs from "fs";
 import { app, server } from "./lib/socket.js";
 import AuthRoutes from "./routes/auth.route.js";
 import cookieParser from "cookie-parser";
@@ -16,8 +15,8 @@ dotenv.config();
 export const BaseUrl =
   process.env.NODE_ENV === "development"
     ? "http://localhost:5173"
-    : process.env.VITE_SERVER_URL;
-app.get("/", (req, res) => {
+    : process.env.CLIENT_URL;
+app.get("/", (_, res) => {
   res.send("Backend is alive");
 });
 
@@ -27,14 +26,12 @@ app.use(
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
     allowedHeaders: ["Content-Type", "Authorization"],
-  })
+  }),
 );
 const port = process.env.PORT || 5001;
 const __dirname = path.resolve();
 
 const distPath = path.join(__dirname, "../frontend/dist");
-console.log("Working directory:", __dirname);
-console.log("Frontend dist:", distPath);
 app.use(express.json({ limit: "10mb" }));
 app.use(express.urlencoded({ limit: "10mb", extended: true }));
 app.use(cookieParser());
@@ -43,17 +40,13 @@ app.use("/api/messages", MessageRoutes);
 app.use("/api/owner", OwnerRoutes);
 app.use("/api/friends", FriendRoutes);
 app.use("/api/wipechat", WipeChatRoutes);
-if (process.env.NODE_ENV === "production") {
 app.use(express.static(distPath));
 
- app.get("*", (_, res) => {
-  console.log("Serving:", path.join(distPath, "index.html"));
+app.get("*", (_, res) => {
   res.sendFile(path.join(distPath, "index.html"));
 });
-}
+
 server.listen(port, () => {
   console.log("Server is running on port " + port);
   connectDB();
 });
-console.log("Dist exists:", fs.existsSync(distPath));
-console.log("Index exists:", fs.existsSync(path.join(distPath, "index.html")));
