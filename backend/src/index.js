@@ -16,7 +16,9 @@ export const BaseUrl =
   process.env.NODE_ENV === "development"
     ? "http://localhost:5173"
     : process.env.VITE_SERVER_URL;
-
+app.get("/", (req, res) => {
+  res.send("Backend is alive");
+});
 
 app.use(
   cors({
