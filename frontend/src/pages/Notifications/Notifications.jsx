@@ -217,8 +217,6 @@ export default function Notifications() {
                       </h3>
                     )}
                     <h2 className="text-lg mt-2">{notification.message}</h2>
-
-                    {/* Action buttons */}
                     {notification.type === "friend_request_received" && (
                       <div className="mt-3 flex gap-3">
                         <button
