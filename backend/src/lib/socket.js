@@ -1,15 +1,11 @@
 import { Server } from "socket.io";
 import http from "http";
 import express from "express";
-import { BaseUrl } from "..";
+import { BaseUrl } from "../index.js";
 
 const app = express();
 const server = http.createServer(app);
 
-const CLIENT_URL =
-  process.env.NODE_ENV === "development"
-    ? "http://localhost:5173"
-    : process.env.CLIENT_URL;
 
 const io = new Server(server, {
   cors: {
