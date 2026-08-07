@@ -1,3 +1,5 @@
+import mongoose from "mongoose";
+
 export const connectDB = async () => {
   try {
     console.log("Mongo URL exists:", !!process.env.MONGODB_URL);
