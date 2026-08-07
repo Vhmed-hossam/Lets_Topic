@@ -37,6 +37,7 @@ app.use("/api/messages", MessageRoutes);
 app.use("/api/owner", OwnerRoutes);
 app.use("/api/friends", FriendRoutes);
 app.use("/api/wipechat", WipeChatRoutes);
+// app.use("/api/feedback", FeedbackRoutes);
 app.use(express.static(distPath));
 
 app.get("*", (_, res) => {
