@@ -28,6 +28,10 @@ app.use(
 );
 const port = process.env.PORT || 5001;
 const __dirname = path.resolve();
+
+const distPath = path.join(__dirname, "../frontend/dist");
+console.log("Working directory:", __dirname);
+console.log("Frontend dist:", distPath);
 app.use(express.json({ limit: "10mb" }));
 app.use(express.urlencoded({ limit: "10mb", extended: true }));
 app.use(cookieParser());
@@ -37,11 +41,12 @@ app.use("/api/owner", OwnerRoutes);
 app.use("/api/friends", FriendRoutes);
 app.use("/api/wipechat", WipeChatRoutes);
 if (process.env.NODE_ENV === "production") {
-  app.use(express.static(path.join(__dirname, "../frontend/dist")));
+app.use(express.static(distPath));
 
-  app.get("*", (_, res) => {
-    res.sendFile(path.join(__dirname, "../frontend", "dist", "index.html"));
-  });
+ app.get("*", (_, res) => {
+  console.log("Serving:", path.join(distPath, "index.html"));
+  res.sendFile(path.join(distPath, "index.html"));
+});
 }
 server.listen(port, () => {
   console.log("Server is running on port " + port);
