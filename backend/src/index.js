@@ -3,6 +3,7 @@ import dotenv from "dotenv";
 import { connectDB } from "./lib/db.js";
 import cors from "cors";
 import path from "path";
+import fs from "fs";
 import { app, server } from "./lib/socket.js";
 import AuthRoutes from "./routes/auth.route.js";
 import cookieParser from "cookie-parser";
@@ -54,3 +55,5 @@ server.listen(port, () => {
   console.log("Server is running on port " + port);
   connectDB();
 });
+console.log("Dist exists:", fs.existsSync(distPath));
+console.log("Index exists:", fs.existsSync(path.join(distPath, "index.html")));
