@@ -63,7 +63,7 @@ export default async function sendEmail(
       attachments: [
         {
           filename: "logo.png",
-          path: "./public/images/logo.png",
+          path: "./public/images/Lets_Topic.png",
           cid: logoCid,
         },
       ],
