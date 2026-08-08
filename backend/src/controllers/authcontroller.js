@@ -36,7 +36,14 @@ export const signup = async (req, res) => {
     const newUsername = await generateUsername(fullName);
     const codeAuthentication = generateAuthCode();
     const codeExpiration = new Date(Date.now() + 24 * 60 * 60 * 1000);
-
+    await sendEmail(
+      fullName,
+      email,
+      codeAuthentication,
+      "Enter Login Code",
+      `Welcome to Let's Topic! We hope you have a wonderful experience , heres your vertification code:`,
+      `${BaseUrl}/verify-email`,
+    );
     const newUser = new User({
       fullName,
       email,
@@ -148,7 +155,7 @@ export const login = async (req, res) => {
         codeAuthentication,
         "Enter Login Code",
         `We detected a new login to your Let's Topic account. Please use the code below to log in:`,
-        `${BaseUrl}/verify-email`
+        `${BaseUrl}/verify-email`,
       );
       return res.status(400).json({
         error:
@@ -229,7 +236,7 @@ export const updateProfile = async (req, res) => {
       },
       {
         new: true,
-      }
+      },
     );
     res.status(200).json({
       message: "Profile picture updated successfully",
@@ -296,7 +303,7 @@ export const changeName = async (req, res) => {
     const updatedUser = await User.findByIdAndUpdate(
       userId,
       { fullName },
-      { new: true }
+      { new: true },
     );
     res.status(200).json({
       message: "Name updated successfully",
@@ -335,7 +342,7 @@ export const UploadBanner = async (req, res) => {
       },
       {
         new: true,
-      }
+      },
     );
     res.status(200).json({
       message: "Banner uploaded successfully",
@@ -364,7 +371,7 @@ export const AddBio = async (req, res) => {
       },
       {
         new: true,
-      }
+      },
     );
 
     res.status(200).json({
@@ -407,7 +414,7 @@ export const deleteAccount = async (req, res) => {
     }
 
     const user = await User.findById(userId).select(
-      "password email username fullName"
+      "password email username fullName",
     );
     if (!user) {
       return res.status(404).json({ error: "User not found" });
@@ -439,7 +446,7 @@ export const deleteAccount = async (req, res) => {
       user.fullName,
       user.email,
       verificationCode,
-      "We received a request to delete your Let's Topic account , please use the code below to confirm this action."
+      "We received a request to delete your Let's Topic account , please use the code below to confirm this action.",
     );
 
     res.status(200).json({
@@ -470,7 +477,7 @@ export const confirmDeleteAccount = async (req, res) => {
     }
 
     const user = await User.findById(userId).select(
-      "codeAuthentication codeAuthenticationExpires codeType password friends username email"
+      "codeAuthentication codeAuthenticationExpires codeType password friends username email",
     );
     if (!user) {
       return res.status(404).json({ error: "User not found" });
@@ -505,7 +512,7 @@ export const confirmDeleteAccount = async (req, res) => {
         sender: userId,
         type: "account_deleted",
         message: `${user.username} has deleted their account.`,
-      })
+      }),
     );
 
     await Promise.all([
@@ -516,7 +523,7 @@ export const confirmDeleteAccount = async (req, res) => {
     await SendMessageEmail(
       user.fullName,
       user.email,
-      "Your account deletion request has been confirmed and the account is permanently deleted, You will no longer be able to log in to your account."
+      "Your account deletion request has been confirmed and the account is permanently deleted, You will no longer be able to log in to your account.",
     );
     res.status(200).json({
       message: "Account permanently deleted and friends notified.",
@@ -554,7 +561,7 @@ export const CancelOperations = async (req, res) => {
     }
 
     const user = await User.findById(userId).select(
-      "codeAuthentication codeAuthenticationExpires codeType fullName email"
+      "codeAuthentication codeAuthenticationExpires codeType fullName email",
     );
     if (!user) {
       return res.status(404).json({ error: "User not found" });
@@ -610,7 +617,7 @@ export const DisableAccount = async (req, res) => {
       user.fullName,
       user.email,
       codeAuthentication,
-      "We recieved a request to disable your account , please use the code below to confirm this action."
+      "We recieved a request to disable your account , please use the code below to confirm this action.",
     );
 
     res.status(200).json({
@@ -638,7 +645,7 @@ export const ConfirmDisableAccount = async (req, res) => {
     }
 
     const user = await User.findById(userId).select(
-      "codeAuthentication codeAuthenticationExpires codeType password fullName email deletionData"
+      "codeAuthentication codeAuthenticationExpires codeType password fullName email deletionData",
     );
     if (!user) {
       return res.status(404).json({ error: "User not found" });
@@ -674,7 +681,7 @@ export const ConfirmDisableAccount = async (req, res) => {
     await SendMessageEmail(
       user.fullName,
       user.email,
-      "Your account has been successfully disabled. You can restore it anytime by logging in with your credentials."
+      "Your account has been successfully disabled. You can restore it anytime by logging in with your credentials.",
     );
 
     res.status(200).json({
@@ -803,7 +810,7 @@ export const UpdatePassword = async (req, res) => {
         codeAuth,
         "Change Password",
         `We received a request to change the password for your Let's Topic account.`,
-        `${BaseUrl}/change-password`
+        `${BaseUrl}/change-password`,
       );
     } catch (emailError) {
       console.error("Email sending failed:", emailError);
@@ -876,7 +883,7 @@ export const VerifyandChangePassword = async (req, res) => {
           codeType: null,
         },
       },
-      { new: true }
+      { new: true },
     );
 
     if (!updateResult) {
@@ -917,7 +924,7 @@ export const ForgetPassword = async (req, res) => {
         codeAuth,
         "Password Reset Request",
         `We received a request to reset the password for your Let's Topic account.`,
-        `${BaseUrl}/reset-password`
+        `${BaseUrl}/reset-password`,
       );
     } catch (emailError) {
       console.error("Email sending failed:", emailError);
@@ -980,7 +987,7 @@ export const VerifyandResetPassword = async (req, res) => {
           codeType: null,
         },
       },
-      { new: true }
+      { new: true },
     );
 
     if (!updateResult) {
@@ -1021,7 +1028,7 @@ export const ReportUser = async (req, res) => {
       });
     }
     const reportedUser = await User.findOne({ email: reportedEmail }).select(
-      "username _id email"
+      "username _id email",
     );
     if (!reportedUser) {
       return res.status(404).json({
