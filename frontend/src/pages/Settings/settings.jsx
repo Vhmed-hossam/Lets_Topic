@@ -72,6 +72,7 @@ export default function Settings() {
                     );
                   })}
                 </div>
+                <h2 className="text-center">version 0.9.4</h2>
               </div>
             </>
           ) : (
