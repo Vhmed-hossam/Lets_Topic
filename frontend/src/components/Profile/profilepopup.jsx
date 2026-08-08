@@ -4,7 +4,6 @@ import {
   Ban,
   ThumbsDown,
   Trash2,
-  TriangleAlert,
   UserX,
   Volume2,
   X,
@@ -19,6 +18,7 @@ import BlockPopover from "../Popovers/BlockPopover";
 import WipeChatPopover from "../Popovers/WipeChatPopover";
 import UnfriendPopover from "../Popovers/UnfriendPopover";
 import ReportPopover from "../Popovers/ReportPopover";
+import { defaultBanner } from "../../Data/Banners";
 
 export default function ProfileComp() {
   const { SelectedUser, ProfileOpened, closeProfile, ChatMedia, OpenMedia } =
@@ -84,7 +84,7 @@ export default function ProfileComp() {
               <div className="relative w-full">
                 <div className="w-full h-40 relative">
                   <img
-                    src={SelectedUser?.banner}
+                    src={SelectedUser?.banner || defaultBanner}
                     alt="Banner"
                     className="w-full h-full object-cover "
                   />
@@ -97,7 +97,7 @@ export default function ProfileComp() {
                   }}
                 >
                   <img
-                    src={SelectedUser.profilePic || defaultImage}
+                    src={SelectedUser?.profilePic || defaultImage}
                     alt="Profile"
                     className="w-full h-full object-cover rounded-full "
                   />
